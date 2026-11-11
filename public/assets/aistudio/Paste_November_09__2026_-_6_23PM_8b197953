@@ -1,0 +1,1153 @@
+# DOCULENS — COMPLETE EXISTING PROJECT REPAIR AND FULL-STACK UPGRADE
+
+## READ THIS FIRST
+
+You are working on my EXISTING DOCULENS web application and its existing GitHub repository.
+
+Do NOT create a new application from scratch.
+
+Do NOT replace the existing product with a simplified template.
+
+Do NOT just redesign the upload screen.
+
+I want you to inspect the full existing repository, identify the root causes of the bugs, repair the actual source code, integrate the required backend services, and verify that the application works.
+
+The current critical issue is:
+
+**When I upload a PDF, the application starts scanning but gets stuck at 35% and never finishes processing the document.**
+
+This is the highest-priority issue.
+
+Other requirements:
+- Proper HTML5, CSS3 and JavaScript web application.
+- Modern frontend and backend architecture.
+- Reliable PDF and other document extraction.
+- Functional Docling integration.
+- Real AI integration through OpenRouter.
+- Dynamic free AI model routing.
+- Secure API-key handling.
+- Real extraction and analysis instead of demo data.
+- Premium UI and cinematic animations.
+- Reliable deployment through GitHub and a suitable hosting provider.
+
+Do not tell me a feature is implemented until you have tested it.
+
+==================================================
+PART 1 — INSPECT THE EXISTING GITHUB REPOSITORY
+==================================================
+
+Before writing code, inspect the entire existing project.
+
+Identify:
+
+1. Frontend framework.
+2. Frontend build system.
+3. Backend framework.
+4. Current JavaScript/TypeScript usage.
+5. Existing CSS and styling framework.
+6. Existing API routes.
+7. Current file-upload implementation.
+8. Current PDF extraction implementation.
+9. Current Python extraction service.
+10. Existing Docling integration.
+11. Current OCR implementation.
+12. Existing OpenRouter integration.
+13. API-key storage and authentication.
+14. Database and storage.
+15. Background job or queue implementation.
+16. Existing environment variables.
+17. Deployment configuration.
+18. Existing animation libraries.
+19. Existing tests.
+20. Current GitHub repository structure.
+
+Search the source code for:
+- `35`
+- `setProgress`
+- `progress`
+- `isProcessing`
+- `isScanning`
+- `uploadFile`
+- `parsePDF`
+- `extractText`
+- `docling`
+- `ocr`
+- `task_id`
+- `poll`
+- `openrouter`
+- `chat/completions`
+
+Find where the progress becomes 35% and why it never advances.
+
+Do not assume that the progress bar itself is the problem. Trace the complete request from the user's upload to the final analysis report.
+
+Create an internal implementation map before changing the code.
+
+Do not delete existing working features.
+
+==================================================
+PART 2 — THE REQUIRED WEB TECHNOLOGY STACK
+==================================================
+
+I want DOCULENS to be a real, modern web application.
+
+Use the following technologies appropriately.
+
+## A. Core frontend technologies
+
+HTML5:
+- Semantic page structure.
+- Accessible navigation.
+- Forms and input elements.
+- Proper document layout.
+- Accessible labels and controls.
+
+CSS3:
+- Responsive design.
+- Flexbox.
+- CSS Grid.
+- Modern transitions.
+- Custom animations.
+- Responsive typography.
+- Consistent spacing and design tokens.
+
+JavaScript ES2022+:
+- Application logic.
+- API communication.
+- User interactions.
+- File upload handling.
+- State management.
+- Dynamic document analysis interfaces.
+
+TypeScript:
+- Use for type safety where the existing project already relies on it.
+- Maintain clear types for document records, parser results, analysis reports, AI requests and API responses.
+
+IMPORTANT:
+
+HTML, CSS and JavaScript are still the technologies used by the website even if React components are stored in `.tsx` files.
+
+Do not add artificial `.html` or `.css` files merely to manipulate GitHub language percentages.
+
+Use proper semantic HTML through React JSX/TSX where appropriate and real CSS stylesheets or Tailwind CSS for styling.
+
+If using JavaScript source files, use `.js` and `.jsx`.
+If retaining TypeScript, use `.ts` and `.tsx` consistently.
+
+Do not perform a dangerous mass conversion of a working TypeScript application into plain JavaScript merely to change GitHub's statistics.
+
+The browser must receive properly compiled JavaScript, HTML and CSS.
+
+## B. Frontend framework and build system
+
+Inspect the existing application before selecting tools.
+
+If the project currently uses React with Vite:
+- Keep React.
+- Keep Vite.
+- Continue using that architecture.
+
+If it currently uses Next.js:
+- Keep Next.js unless there is a justified technical reason to change it.
+- Use its existing routing, server and application architecture.
+
+Do not combine Next.js and Vite as two competing primary build systems.
+
+React should provide the component-based interface.
+
+Use a clean modular component structure.
+
+## C. Styling and UI components
+
+Use:
+- Tailwind CSS where already integrated or appropriate.
+- shadcn/ui for customisable interface components where appropriate.
+- Radix UI primitives for accessible dialogs, dropdowns and other controls.
+- Lucide Icons or Phosphor Icons for consistent iconography.
+
+Do not introduce multiple competing UI systems unnecessarily.
+
+## D. Animation and visual effects
+
+Use the existing animation system where possible.
+
+Motion / Framer Motion:
+- Component transitions.
+- Page transitions.
+- Card animations.
+- Interactive interface states.
+- Modal and dropdown motion.
+
+GSAP:
+- Cinematic timelines.
+- ScrollTrigger effects.
+- Complex scroll-driven storytelling.
+- Selected landing-page sequences.
+
+Lenis:
+- Smooth scroll behaviour, only where it improves the experience.
+
+Three.js / React Three Fiber:
+- Selective 3D hero elements.
+- Floating document visualisations.
+- Lightweight interactive background elements.
+
+Lottie / dotLottie:
+- Selected lightweight animated illustrations.
+
+Do not install all animation libraries and use all of them everywhere.
+
+Choose the tools that fit each animation. Keep the result smooth and performant.
+
+## E. Backend technologies
+
+Use Node.js as the primary application backend.
+
+Use JavaScript or TypeScript consistently with the existing project.
+
+If the existing application is based on Vite and React, use a Node.js API backend such as Express or the current compatible server.
+
+If using Next.js, use its server-side routes where appropriate.
+
+Node.js should handle:
+- User authentication.
+- File-upload orchestration.
+- Database operations.
+- Document records.
+- Processing job creation.
+- Document-processing service communication.
+- OpenRouter API communication.
+- AI request orchestration.
+- Report storage.
+- User API-key management.
+- Error handling.
+
+Python should be used for the dedicated Docling document-processing service.
+
+This is intentional. The main website and application backend should remain JavaScript-based, while the specialised document parser can run in Python.
+
+## F. Developer environment and deployment
+
+Use:
+- Node.js.
+- npm or pnpm, whichever the existing lockfile uses.
+- Git.
+- GitHub.
+- Environment variables.
+- Proper development and production configuration.
+
+Deployment:
+- Vercel or Netlify may host the frontend and compatible Node application.
+- Deploy the Docling Python service separately as a persistent containerised service when required.
+- Do not assume that a large Python OCR workload will work reliably inside a short-lived frontend serverless function.
+- Configure the frontend/backend to communicate with the deployed extraction service through secure environment variables.
+
+Use one package manager consistently.
+
+Do not delete the existing lockfile.
+
+==================================================
+PART 3 — FIX THE PDF UPLOAD STUCK AT 35%
+==================================================
+
+THIS IS THE FIRST BUG TO FIX.
+
+The application currently starts scanning and becomes stuck at approximately 35%.
+
+Find the exact reason.
+
+Trace the entire flow:
+
+USER SELECTS FILE
+    ↓
+FRONTEND VALIDATES FILE
+    ↓
+FRONTEND SENDS MULTIPART UPLOAD
+    ↓
+NODE.JS BACKEND RECEIVES FILE
+    ↓
+FILE IS STORED TEMPORARILY OR IN SECURE STORAGE
+    ↓
+NODE.JS CREATES PROCESSING JOB
+    ↓
+NODE.JS SENDS FILE TO DOCLING SERVICE
+    ↓
+DOCLING ACCEPTS CONVERSION TASK
+    ↓
+BACKEND RECEIVES TASK ID
+    ↓
+BACKEND CHECKS PROCESSING STATUS
+    ↓
+BACKEND FETCHES COMPLETED EXTRACTION RESULT
+    ↓
+BACKEND VALIDATES EXTRACTED CONTENT
+    ↓
+DETERMINISTIC ANALYSIS RUNS
+    ↓
+AI ANALYSIS RUNS IF CONNECTED
+    ↓
+REPORT IS GENERATED
+    ↓
+REPORT IS SAVED AND DISPLAYED
+
+Investigate every stage.
+
+Potential causes to investigate:
+- Frontend waits for a synchronous response but backend returns a task ID.
+- Incorrect Docling endpoint.
+- Incorrect multipart field name.
+- Wrong Content-Type.
+- Failed file upload.
+- Incorrect API URL.
+- Environment variable not configured.
+- Python extraction service not deployed.
+- CORS issue between services.
+- Authentication failure.
+- Backend never polls the Docling task.
+- Backend polls the wrong task ID.
+- Result endpoint is never called.
+- Background task fails but frontend does not receive the error.
+- A timeout or network request is silently rejected.
+- A JSON response is parsed using the wrong schema.
+- A database operation fails after extraction.
+- The progress bar is hardcoded and does not represent actual processing.
+
+Do not guess which issue is responsible. Inspect the code and runtime logs to identify it.
+
+## Correct asynchronous Docling integration
+
+Official references:
+
+https://github.com/docling-project/docling-serve
+
+https://docling-project.github.io/docling/usage/api_server/rest_api/
+
+Use the asynchronous file-conversion lifecycle where appropriate.
+
+Submit the file:
+
+POST /v1/convert/file/async
+
+Use the multipart form field required by Docling, namely `files`.
+
+Receive and save the actual task ID.
+
+Check the task:
+
+GET /v1/status/poll/{task_id}
+
+When completed, retrieve the result:
+
+GET /v1/result/{task_id}
+
+Handle all documented states:
+- pending
+- started
+- success
+- failure
+
+Use the actual response format and validate it.
+
+Do not invent an endpoint or assume the conversion response contains the entire result when it only contains a task identifier.
+
+If a synchronous API is used for genuinely small files, still implement proper timeout and error handling.
+
+## Actual progress handling
+
+Do not display a fake 35%, 60% or 90% progress value.
+
+Use actual processing states.
+
+Suggested stages:
+
+0. Preparing upload.
+1. Uploading file.
+2. File received by server.
+3. Validating document.
+4. Sending to extraction engine.
+5. Extracting text and structure.
+6. OCR processing where necessary.
+7. Extracting tables and layout.
+8. Validating extracted pages.
+9. Deterministic analysis.
+10. AI analysis.
+11. Building report.
+12. Saving results.
+13. Completed.
+
+Show an accurate progress indication based on real events.
+
+If Docling only provides task status rather than a precise percentage, show a stage indicator instead of pretending that a precise percentage is available.
+
+The interface should clearly tell the user what is happening.
+
+## Stuck-job handling
+
+Implement:
+- Network timeouts.
+- Configurable overall processing timeout.
+- Retry for transient service errors.
+- Job cancellation.
+- Job restart.
+- Polling interval control.
+- Maximum polling duration.
+- Error reporting.
+- Failed-job cleanup.
+- Duplicate-upload protection.
+- Safe retry without creating multiple conflicting reports.
+
+If a job has not changed state for a defined period:
+- Show which stage is stuck.
+- Record its last successful action.
+- Give a meaningful error message.
+- Allow retry.
+- Keep the original uploaded file.
+- Do not display a permanent spinner.
+
+When the job fails, show the actual reason where safe.
+
+Never lose the original uploaded file because parsing failed.
+
+==================================================
+PART 4 — BUILD A REAL BACKGROUND PROCESSING SYSTEM
+==================================================
+
+Long documents and OCR tasks should not depend on an open browser connection.
+
+Create a proper processing-job system.
+
+Each job should contain:
+
+- jobId
+- documentId
+- userId where authentication exists
+- status
+- currentStage
+- createdAt
+- startedAt
+- updatedAt
+- completedAt
+- errorCode
+- userFriendlyError
+- retryCount
+- parserTaskId
+- extractedPageCount
+- expectedPageCount
+- processingMetadata
+
+Store the job status in the backend/database.
+
+The browser should query the actual backend job status.
+
+Use WebSocket or server-sent events if supported by the existing architecture. Otherwise use controlled polling.
+
+Ensure that refreshing the page does not destroy an ongoing extraction job.
+
+If the user closes the browser, backend processing should continue wherever the deployment architecture supports persistent jobs.
+
+The report should be accessible after reopening the application.
+
+Prevent duplicate jobs when the user double-clicks Upload.
+
+Use document IDs and job IDs to keep each upload separate.
+
+==================================================
+PART 5 — REAL DOCLING EXTRACTION SERVICE
+==================================================
+
+Use Docling as the primary structured extraction system.
+
+Official sources:
+
+https://github.com/docling-project/docling
+
+https://github.com/docling-project/docling-serve
+
+Create or repair a separate Python Docling API service if needed.
+
+Use a persistent service and secure API authentication.
+
+The Node.js backend communicates with Docling. The browser must not need direct access to internal parser credentials.
+
+The service should support:
+- PDF.
+- DOCX and DOC.
+- XLSX and XLS.
+- CSV.
+- PPTX and PPT.
+- ODT and ODS.
+- TXT.
+- HTML.
+- PNG.
+- JPG/JPEG.
+- TIFF.
+- WEBP.
+- Other formats only when the installed parser supports them.
+
+Use native PDF text extraction before OCR.
+
+Detect image-only pages and apply OCR only where needed.
+
+For mixed PDFs, combine native text and OCR output at page level.
+
+Preserve:
+- Page number.
+- Section.
+- Heading.
+- Paragraph.
+- Table.
+- Row and column.
+- Sheet name.
+- Cell address where available.
+- Slide number.
+- Source coordinates where available.
+
+For every processed document, produce an extraction audit containing:
+- Original filename.
+- File hash.
+- Format.
+- Page/sheet/slide count.
+- Parsed page count.
+- Word count.
+- Character count.
+- Table count.
+- OCR pages.
+- Native text pages.
+- Warnings.
+- Parser name and version.
+- Processing time.
+- Extraction status.
+
+Do not claim full extraction when only part of the file was parsed.
+
+==================================================
+PART 6 — USE HTML, CSS AND JAVASCRIPT PROPERLY
+==================================================
+
+The web app must have a proper frontend/backend separation.
+
+Suggested structure, adapted to the actual repository:
+
+frontend/
+  components/
+  pages/
+  layouts/
+  hooks/
+  services/
+  styles/
+  assets/
+  animations/
+
+backend/
+  routes/
+  controllers/
+  middleware/
+  services/
+  jobs/
+  database/
+  ai/
+  storage/
+  utils/
+
+document-service/
+  app/
+  parsers/
+  ocr/
+  tests/
+  Dockerfile
+  requirements.txt
+
+Do not blindly create duplicate folders if equivalent folders already exist.
+
+The HTML layer must provide accessible semantic structure.
+
+The CSS layer must own the visual styling.
+
+The JavaScript application layer must handle frontend logic and API calls.
+
+The Node.js backend must handle application APIs and orchestration.
+
+The Python service must only provide specialist document conversion and extraction.
+
+Use modular code.
+
+Do not place the entire application in one enormous source file.
+
+==================================================
+PART 7 — FIX OPENROUTER AI CONNECTION
+==================================================
+
+The current AI functionality is not sufficiently reliable.
+
+The Settings page must provide a real OpenRouter connection.
+
+Official documentation:
+
+https://openrouter.ai/docs
+
+## A. Default free model router
+
+Use:
+
+openrouter/free
+
+as the default model for free routing.
+
+The free router dynamically selects a currently available free model that matches the request's capabilities.
+
+Do not hardcode a permanently fixed model.
+
+Free model availability, rate limits and performance can change.
+
+Fetch the current model catalogue when needed.
+
+Use model capability information to select models appropriately.
+
+Do not blindly select a text-only model for an image-understanding request.
+
+Do not promise that the free router guarantees a response every time.
+
+If the free router is unavailable, inspect the currently available free models and offer a compatible fallback.
+
+Only use a specific `:free` model variant if it is actually listed as available and suitable for the request.
+
+Do not hardcode old examples simply because they appear in previous code.
+
+## B. Very important: document extraction is separate from model routing
+
+Do not expect OpenRouter to perform the complete PDF extraction pipeline.
+
+The correct process is:
+
+UPLOADED PDF
+    ↓
+DOCLING / NATIVE PDF PARSER
+    ↓
+OCR WHERE NECESSARY
+    ↓
+STRUCTURED EXTRACTED CONTENT
+    ↓
+AI MODEL THROUGH OPENROUTER
+    ↓
+INTELLIGENT REPORT
+
+For text documents, send the extracted text and structured page content to the AI.
+
+For scanned documents, use OCR first.
+
+Only send page images to AI models that are currently confirmed to support vision input.
+
+The AI model should enhance understanding, not replace the extraction engine.
+
+## C. Correct OpenRouter API endpoint
+
+Use the OpenRouter chat-completions endpoint:
+
+POST https://openrouter.ai/api/v1/chat/completions
+
+Use the proper request format.
+
+Example backend request structure:
+
+{
+  "model": "openrouter/free",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the DOCULENS document intelligence assistant. Only use the supplied extracted document evidence when answering document-specific questions."
+    },
+    {
+      "role": "user",
+      "content": "Analyse the extracted document content and return structured findings with source page references."
+    }
+  ]
+}
+
+Do not send this example as a fixed analysis request. Build the actual request dynamically from the document and selected operation.
+
+## D. Required headers
+
+Use:
+
+Authorization: Bearer <API_KEY>
+
+Content-Type: application/json
+
+HTTP-Referer: <ACTUAL_APP_URL>
+
+X-OpenRouter-Title: DOCULENS
+
+Use the actual deployed app URL, not a made-up domain.
+
+OpenRouter supports `X-Title` for backwards compatibility, but prefer the current `X-OpenRouter-Title` header.
+
+Keep all OpenRouter requests on the server.
+
+## E. Dynamic user API-key authentication
+
+The current app must support the user entering their own OpenRouter key.
+
+The proper flow:
+
+1. User opens AI Settings.
+2. User enters their OpenRouter API key.
+3. Frontend sends it securely to the application's backend over HTTPS.
+4. Backend validates the key with OpenRouter.
+5. Backend returns only a safe connection result.
+6. If the user chooses to save it, securely encrypt it and store it server-side.
+7. Future AI requests use the selected user's saved key.
+8. Provide change and delete controls.
+
+Use the currently documented OpenRouter current-key endpoint:
+
+GET https://openrouter.ai/api/v1/key
+
+Send:
+
+Authorization: Bearer <USER_API_KEY>
+
+Do not use an invented or outdated endpoint such as `/api/v1/auth/key`.
+
+Do not validate the key by making an exposed browser request to OpenRouter.
+
+Do not save raw API keys in:
+- localStorage.
+- sessionStorage.
+- frontend source code.
+- browser logs.
+- public database records.
+- URLs.
+- GitHub commits.
+
+Use encrypted server-side storage for saved user keys.
+
+If the app does not yet have secure authenticated key storage, offer session-only key usage rather than unsafe persistent storage.
+
+Provide:
+- Test connection.
+- Connection status.
+- Masked saved-key display.
+- Update key.
+- Remove key.
+- Last successful test.
+- Human-readable error details.
+
+## F. Optional system-level key
+
+Allow the project administrator to configure:
+
+OPENROUTER_API_KEY
+
+as a backend environment variable.
+
+Never write the real value into the repository.
+
+Keep a safe `.env.example` file containing placeholder variable names only.
+
+Do not commit `.env`.
+
+Do not reveal a system-level key to users.
+
+## G. AI settings interface
+
+The Settings page should display:
+
+- AI provider.
+- Connection status.
+- Default model.
+- Selected model.
+- Model availability.
+- Model capabilities.
+- Test connection button.
+- API-key status.
+- AI processing history.
+- Last error.
+- Retry action.
+
+A stored API key is not proof of a working AI connection.
+
+The app must make a real test request.
+
+## H. OpenRouter free model limitations
+
+Free models can be rate limited, unavailable or slower.
+
+Implement:
+- 429 rate-limit handling.
+- 503 provider-unavailable handling.
+- Request timeout.
+- Retry with exponential backoff.
+- Honor Retry-After where provided.
+- Model fallback.
+- Request cancellation.
+- User-friendly error messages.
+
+Do not display raw error JSON.
+
+If all AI models fail, the extracted document and deterministic report must remain available.
+
+==================================================
+PART 8 — REAL AI DOCUMENT INTELLIGENCE
+==================================================
+
+AI must work on the actual extracted document.
+
+Implement:
+
+1. Detailed document summary.
+2. Plain-language explanation.
+3. Deep requirement extraction.
+4. Key date and deadline interpretation.
+5. Financial and commercial analysis.
+6. Important clause explanation.
+7. Risk and warning analysis.
+8. Missing requirement detection.
+9. Contradiction detection.
+10. Multi-document comparison.
+11. Evidence/profile matching.
+12. Action-plan generation.
+13. Document-based question answering.
+14. Spreadsheet analysis.
+15. Chart explanation based on actual spreadsheet data.
+16. Multilingual explanation where the selected model supports it.
+
+For long files:
+
+- Split extracted content into page/section-aware chunks.
+- Preserve page and section metadata.
+- Process chunks in controlled batches.
+- Avoid token-limit failures.
+- Combine results only after validating source references.
+- Never silently discard the remaining pages.
+- Store intermediate results so a failed AI batch can be retried.
+
+Use retrieval for document Q&A.
+
+A user should be able to ask:
+
+- What is the main purpose of this document?
+- What are the mandatory requirements?
+- What is the last date?
+- What documents do I need?
+- What are the financial terms?
+- Which conditions are risky?
+- What is missing?
+- Explain page 15.
+- Compare these two clauses.
+- Give me a complete checklist.
+
+Every answer must cite its actual source page or section.
+
+If the document does not state an answer, say so.
+
+==================================================
+PART 9 — DETERMINISTIC ANALYSIS MUST WORK WITHOUT AI
+==================================================
+
+Even if the user has no API key, DOCULENS must be useful.
+
+It must still:
+- Extract real text.
+- Extract dates.
+- Extract currency values.
+- Detect percentages.
+- Detect headings and sections.
+- Extract eligibility criteria.
+- Extract required documents.
+- Detect submission instructions.
+- Identify important clauses.
+- Extract tables.
+- Analyse spreadsheets.
+- Find missing information.
+- Generate checklists.
+- Show source page references.
+
+Never replace extracted values with sample data.
+
+Do not treat every number as money.
+
+Do not invent a contract budget.
+
+Do not call an old deadline upcoming.
+
+Do not turn "not found" into "not eligible".
+
+The non-AI mode should produce a useful structured report based on the actual content.
+
+==================================================
+PART 10 — SECURITY AND RELIABILITY
+==================================================
+
+Implement:
+- Server-side file validation.
+- MIME and extension checks.
+- File size limits.
+- Malware-safety checks where infrastructure supports them.
+- Safe temporary file storage.
+- Cleanup of expired temporary files.
+- Authenticated backend service communication.
+- Rate limiting.
+- Input validation.
+- API-key encryption at rest.
+- Secret redaction in logs.
+- No hardcoded secrets.
+- No public parser credentials.
+- No untrusted file execution.
+- Proper error boundaries.
+
+A document file must never be executed as code.
+
+Do not expose internal Python service endpoints and secrets directly to the public browser.
+
+Add authentication and ownership checks so one user's documents cannot be accessed by another user.
+
+==================================================
+PART 11 — CLEAN, PREMIUM UI AND CINEMATIC DESIGN
+==================================================
+
+Preserve the agreed visual direction:
+
+INTELLIGENCE IN MOTION.
+
+Design:
+- Dark obsidian/graphite background.
+- Electric lime accent.
+- Warm white typography.
+- Steel-grey supporting text.
+- Editorial typography.
+- Premium AI dashboard.
+- Precise data visualisations.
+- High contrast and readable spacing.
+
+Main navigation:
+
+- Overview.
+- New Analysis.
+- My Documents.
+- Compare.
+- Profile.
+- Settings.
+
+Do not overcrowd the dashboard with too many tabs.
+
+Upload screen:
+- Clear drag-and-drop zone.
+- Supported file formats.
+- File size limit.
+- Upload status.
+- Extraction status.
+- Recovery actions.
+
+Analysis screen:
+- Clear report structure.
+- Section navigation.
+- Readable tables.
+- Important information cards.
+- Source references.
+- Extracted-text preview.
+- Quality warnings.
+- Interactive AI question panel.
+
+Add animations:
+- Document scanning.
+- Text detection highlights.
+- Extraction progress.
+- Card reveals.
+- Smooth page transitions.
+- Floating document cards.
+- Chart animations.
+- Checklist completion.
+- Interactive hover states.
+- Scroll-triggered storytelling.
+- Cinematic landing-page entrance.
+
+Do not use animation to conceal a stalled backend job.
+
+A progress animation is never a substitute for actual progress.
+
+==================================================
+PART 12 — TESTING AND VERIFICATION
+==================================================
+
+Create real automated tests.
+
+Test the following:
+
+1. Small text PDF.
+2. 32-page WCI RFP.
+3. Scanned PDF.
+4. Mixed text and image PDF.
+5. DOCX.
+6. Multi-sheet XLSX.
+7. CSV.
+8. PPTX.
+9. JPG containing text.
+
+For the WCI RFP, use these reference facts:
+
+- 32 pages.
+- Approximately 9,565 words in the local baseline extraction.
+- Issuer: Western Climate Initiative, Inc.
+- Title: Enterprise Solution – Professional IT Services.
+- Reference: RFP 2021-02.
+
+Verify that the file does not stop processing at 35%.
+
+Test:
+- Normal successful upload.
+- Large file upload.
+- Network interruption.
+- Parser unavailable.
+- Invalid API key.
+- OpenRouter 503.
+- OpenRouter 429.
+- Model unavailable.
+- OCR failure.
+- Partial extraction.
+- User cancels upload.
+- User retries failed job.
+- User refreshes during processing.
+
+For every test, record:
+
+- File name.
+- Upload status.
+- Parser status.
+- Job status.
+- Processing stage.
+- Extracted page count.
+- Extracted words.
+- OCR usage.
+- Analysis status.
+- AI status.
+- Error information.
+- Final result.
+
+Add a test specifically proving that a job cannot remain indefinitely at 35% without a visible error or progress state.
+
+==================================================
+PART 13 — GITHUB AND DEPLOYMENT
+==================================================
+
+Inspect the existing GitHub repository.
+
+Do not create a new unrelated repository.
+
+Keep:
+- package.json.
+- Existing lockfile.
+- Source files.
+- Environment variable structure.
+- Database migrations.
+- Deployment files.
+
+Do not accidentally commit API keys or secrets.
+
+Create or improve:
+- README.md.
+- `.env.example`.
+- `.gitignore`.
+- Backend deployment instructions.
+- Python service deployment instructions.
+- Frontend deployment instructions.
+- Local development instructions.
+- Health-check instructions.
+
+Use the appropriate package manager from the existing repository.
+
+Ensure the build and application can start using the actual documented commands.
+
+If deploying the frontend and Node backend on Vercel or Netlify, verify that the backend functions have suitable execution limits for the required work.
+
+The Python Docling service should be deployed as a separate persistent service where necessary.
+
+Configure:
+- DOCULING_SERVICE_URL (use a clearly named variable such as DOCLING_SERVICE_URL).
+- DOCLING_SERVICE_API_KEY.
+- OPENROUTER_API_KEY where a system key is used.
+- DATABASE_URL.
+- STORAGE configuration.
+- FRONTEND_URL.
+- BACKEND_URL.
+
+Use actual environment variables and document them.
+
+==================================================
+FINAL EXECUTION ORDER
+==================================================
+
+DO NOT IMPLEMENT EVERYTHING RANDOMLY.
+
+Follow this order:
+
+1. Inspect the current repository.
+2. Identify why the upload is stuck at 35%.
+3. Repair file upload and backend communication.
+4. Repair Docling asynchronous task handling.
+5. Make a real PDF upload complete successfully.
+6. Verify actual extracted text.
+7. Verify complete page coverage.
+8. Repair deterministic document analysis.
+9. Fix OpenRouter key validation.
+10. Implement dynamic `openrouter/free` routing.
+11. Implement actual AI document analysis.
+12. Add error handling and fallback.
+13. Fix UI progress and report states.
+14. Restore the cinematic interface and animation.
+15. Test all major file formats.
+16. Prepare deployment documentation.
+
+Do not stop after creating the UI.
+
+Do not stop after installing packages.
+
+Do not stop after writing a Docling configuration.
+
+Do not stop after creating an API route.
+
+The end-to-end workflow must actually run.
+
+==================================================
+FINAL DELIVERY REPORT
+==================================================
+
+At the end, provide:
+
+A. ROOT CAUSE
+Explain exactly why the app previously stopped at 35%.
+
+B. CHANGES MADE
+List actual files modified and explain the changes.
+
+C. EXTRACTION TESTS
+Show which real files were tested and the result.
+
+D. AI TEST
+Show whether OpenRouter was actually connected and which model answered.
+
+E. FREE ROUTING
+Show whether `openrouter/free` worked and whether a fallback was tested.
+
+F. DEPLOYMENT
+Explain which services are deployed and which still require a URL or secret.
+
+G. REMAINING PROBLEMS
+List every feature that is incomplete.
+
+H. HOW TO RUN
+Give the exact commands to run the website and each backend service.
+
+I. TESTED PROGRESS
+Show evidence that the upload completes. Do not mark it fixed simply because the progress bar changed.
+
+MOST IMPORTANT:
+
+I want a functioning application, not a simulated one.
+
+When I upload a real PDF, DOCX, Excel file or other supported document, the application must receive it, process it, extract the actual content, analyse it and display the resulting report.
+
+If a service is not configured or deployed, tell me exactly what is missing.
+
+Do not fabricate success.
+
+DOCULENS must be a real universal document intelligence platform.

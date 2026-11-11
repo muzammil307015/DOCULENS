@@ -1,0 +1,271 @@
+BUILD A COMPLETE FULL-STACK AI DOCUMENT INTELLIGENCE PLATFORM CALLED DOCULENS
+
+ROLE
+Act as a senior product architect, full-stack engineer, AI engineer, document-processing engineer, security and privacy engineer, UI/UX designer, motion designer, and QA engineer, working together. Design, implement, run, and test a real, usable application — not a static prototype, not a landing-page-only site, not screens with no logic behind them. Never fake a working feature. If something needs credentials or infrastructure not yet configured, implement its real architecture, show a clear configuration state, and keep everything else functional.
+
+PRODUCT
+DOCULENS turns complicated documents into understandable insights, requirements, comparisons, warnings, and action plans.
+Core promise: UPLOAD ANY DOCUMENT → UNDERSTAND IT → EXTRACT WHAT MATTERS → IDENTIFY WHAT IS REQUIRED → FIND WHAT IS MISSING → KNOW WHAT TO DO NEXT.
+It must be fully useful with no AI key connected and no account created.
+"DOCULENS" is a working name — store it in one config value so it can be renamed later without touching the codebase.
+
+TARGET USERS — THIS IS NOT A STUDENT APP
+Build for anyone who struggles to read, verify, or act on a document: students, parents, job seekers, employees, professionals, freelancers, individual applicants, small businesses, startups, large companies, NGOs, colleges and institutions, consultants and agencies, and general citizens dealing with official paperwork. Use one flexible profile model — do not build separate apps or separate flows per user type.
+
+EXAMPLE USE CASES
+- Student uploads a scholarship notice → amount, last date, eligibility, required documents, steps.
+- Company uploads a government tender → eligibility, GST, turnover, experience, certificates, EMD, deadlines.
+- Job seeker uploads a job description → required skills compared against their saved CV.
+- Freelancer uploads a client contract → payment terms, deliverables, deadlines, penalties, termination, risks.
+- College administrator uploads a circular → structured explanation and action checklist.
+- A spreadsheet of applicants → counts, totals, duplicates, missing values, charts from real data.
+
+APPLICATION STRUCTURE
+Public area: Home, Product capabilities, How it works, Use cases, Privacy and security, Free-plan explanation, Sign in, Start analysing.
+Authenticated area: Dashboard, Analyse a document, My analyses, Document comparison, My profile, Evidence vault, Deadlines and reminders, Saved checklists, Document memory, AI settings, Privacy centre, Account settings.
+Guest mode must work fully for analysis. Clearly state that guest data is temporary and that saving history needs an account.
+Fully responsive: desktop, tablet, mobile.
+
+LANDING PAGE
+Cinematic, premium — not a generic AI SaaS template.
+Headline: "Documents don't tell you what to do. DOCULENS does."
+Subhead: "Turn complex documents into clear requirements, verified evidence, and your next best actions."
+Primary CTA: "Analyse a document". Secondary CTA: "Explore the platform".
+Sections: hero with floating document panels, the problem (information buried in documents), how it works, main capabilities, use cases by audience, a live-feeling interactive demo built from real product UI, privacy-first explanation, deterministic-vs-AI explanation, final CTA, footer.
+No unsupported claims about accuracy, certification, security, or outcomes anywhere.
+
+DASHBOARD
+Welcome area, a prominent "Analyse a document" action, recent analyses, saved documents, upcoming deadlines, incomplete checklists, profile completeness, evidence vault summary, AI connection status, recent activity, quick actions.
+Category entry points: RFPs and Tenders, Scholarships, College Admissions, Jobs and Careers, Contracts and Agreements, Government Schemes, Financial and Business Documents, General Documents — all are shortcuts into ONE shared engine, not separate systems. Auto-classify uploads; let the user correct the classification.
+
+UPLOAD AND FILE PROCESSING — MUST REALLY PARSE FILES
+Support PDF, DOCX, XLSX, XLS, CSV, TXT, JPG, JPEG, PNG, PPTX.
+Implement: drag-and-drop, file picker, multi-file upload, size/type validation, real upload progress, real processing progress, retry, clear errors, preview where practical, page/sheet identification, extracted-text inspection, metadata display.
+Use real parsers: PDF.js, Mammoth (DOCX), SheetJS (XLSX/CSV), Tesseract.js or an OCR service (scans/images), a PPTX text extractor. Label OCR output with a confidence level; flag low-confidence text.
+Spreadsheets: extract sheet names, headers, rows, data types, cell references; store formulas as text; NEVER execute formulas, macros, or embedded code.
+Chunk large documents sensibly (e.g. a 150-page RFP).
+Keep every parser modular so formats can be added later.
+Validate file type and size on both client and server.
+
+PRIVACY-FIRST PIPELINE — RUNS BEFORE ANY EXTERNAL AI CALL
+Deterministically detect sensitive data in extracted text, PDFs, OCR output, spreadsheet cells, and metadata where practical: phone numbers, personal addresses, government ID numbers, bank account numbers, payment card numbers (Luhn-checked where applicable), passwords, API keys, access tokens, other sensitive identifiers.
+Default visibility policy (exact, do not change):
+- Company name: VISIBLE
+- Person's name: VISIBLE
+- Email address: VISIBLE
+- Phone number: HIDDEN
+- Personal address: HIDDEN
+- Government ID numbers: HIDDEN
+- Bank account details: HIDDEN
+- Payment card details: HIDDEN
+- Passwords and access tokens: HIDDEN
+Users review detections, correct false positives, change the policy, and reveal a value only on deliberate action.
+Keep the original file untouched and separate from a redacted processing copy, created only when needed.
+External AI receives ONLY the redacted copy, never the original.
+If reliable redaction cannot be done on an image or scan, say so plainly and block external AI processing for that file rather than pretending it is safe.
+Use secure temporary storage with a clear deletion policy. Never promise absolute security.
+
+UNIVERSAL DOCUMENT INTELLIGENCE ENGINE
+One engine, category-specific templates. For every document attempt to extract: title, type, issuing organisation, document date, important dates, deadlines, financial amounts, eligibility, requirements, mandatory documents, important clauses, obligations, submission instructions, contact details, risks, warnings, next steps.
+
+Output sections:
+A. Executive summary in plain language
+B. Key information
+C. Requirements — each with name, description, mandatory/optional, source location (page/section/sheet/row/cell), confidence, verification status
+D. Eligibility
+E. Required documents
+F. Important dates
+G. Financial information
+H. Terms and conditions explained simply
+I. Risks and warnings
+J. Action plan (step-by-step checklist)
+K. Document Q&A (below)
+
+CATEGORY TEMPLATES
+RFP/Tender: reference number, department, tender value, EMD, tender fee, submission deadline, technical/financial requirements, GST, company registration, turnover, years of experience, similar-project experience, certificates, mandatory attachments, submission procedure, evaluation criteria, disqualification conditions, penalties, contract duration.
+Scholarship: name, provider, amount, eligible levels/groups, minimum marks, income limits, required documents, dates, renewal conditions, selection criteria, procedure.
+College admission: institution, programme, eligibility, academic requirements, entrance exams, fees, dates, certificates, explicitly-stated category conditions, steps.
+Job: title, employer, location, salary if stated, experience, skills, education, responsibilities, preferred qualifications, instructions, deadline.
+Contract: parties, effective date, duration, payment terms, deliverables, obligations, termination, renewal, confidentiality, penalties, liability, dispute resolution, unusual clauses.
+Government scheme: name, department, purpose, beneficiaries, benefits, eligibility, required documents, procedure, dates, conditions.
+General: auto-detect and use the closest template.
+Implement templates as data-driven configuration, not separate hardcoded pipelines.
+
+DETERMINISTIC VS AI — LABEL EVERYTHING
+Deterministic (always available, no key needed): parsing, date/amount detection, keyword/pattern detection, sensitive-data detection, basic classification, spreadsheet statistics, source tracking, checklists from clearly extracted requirements, expiry arithmetic, cross-document comparison of strings and numbers.
+AI-assisted (needs a configured provider): complex clause interpretation, nuanced requirement extraction, plain-language explanation, cross-document reasoning, richer action plans, document Q&A depth, contradiction analysis, contextual spreadsheet insight, AI-generated chart specifications.
+User-confirmed: anything the user has reviewed/edited.
+Independently verified: only when an actual external source was checked — otherwise show "Not independently verified."
+Both modes share the same results layout; AI changes depth, not structure.
+
+DOCUMENT Q&A
+Support questions like: What is the last date? What documents do I need? What is the minimum turnover? Explain this clause simply. Am I eligible based on my profile? Which requirements are still missing? What should I do first? Where does the document say this?
+Deterministic mode: keyword/evidence-index search. AI mode: retrieval over extracted passages.
+Every answer cites page/section/sheet/row/cell and offers source navigation. If the answer isn't in the document, say so. Never fabricate a citation.
+
+RISK, FRAUD INDICATORS, AND SOURCE VERIFICATION
+Flag: unusual payment instructions, suspicious contact details, conflicting organisation names/registration numbers, inconsistent dates/amounts, unexpected fees, contradictory conditions, unusual clauses, inconsistent metadata.
+Label every flag an indicator requiring verification — NEVER declare a document fraudulent from automated analysis alone.
+Differentiate clearly: Expired / Outdated / Inconsistent / Potentially suspicious / Verified through an actual external source / Not independently verified / Unable to verify. An expired date is not an invalid document.
+Explain why each warning fired and show its source.
+Implement digital-signature inspection and QR-code/source-link verification where technically feasible; never claim a document was verified against an issuer unless that check actually ran.
+
+EXPIRY, DEADLINE, AND CHANGE INTELLIGENCE
+Detect expired or soon-to-expire certificates, licences, contracts; surface submission deadlines and renewal dates. Example: "Your company registration certificate expires in 2 days."
+Document change / outdated-version detection: when a newer version of a document is uploaded or found, show what changed (added/removed/modified), and say "appears to be superseded" rather than asserting it outright.
+Re-check dates every time the app is opened; never treat a stored fact as current without re-checking.
+
+REQUIREMENT COMPARISON — HAVE VS MISSING
+Optional. Compares the analysed document's requirements against the user's profile and evidence vault.
+Status per requirement: FOUND, MISSING EVIDENCE, NEEDS VERIFICATION, NOT APPLICABLE, CONFLICT DETECTED.
+FOUND means evidence was located, not that it's verified — keep verification status visible separately.
+Show the source of every comparison. Never mark a requirement satisfied without sufficient evidence.
+A readiness score appears only with enough evidence, with its formula and contributing requirements shown. Never imply it guarantees eligibility or success.
+If there's no profile, the main analysis still works fully, with a non-blocking invitation to add evidence.
+
+USER PROFILE AND EVIDENCE VAULT
+Separate from the document being analysed. Profile types: student, individual, professional, freelancer, business, startup, NGO, institution, other.
+Evidence examples: CVs, certificates, marksheets, experience letters, ID/registration documents, GST documents, company registration, financial statements, project records, portfolios, licences.
+Each extracted fact stores: value, source document, source location, extraction date, confidence, verification status, expiry date where applicable.
+Users can correct, confirm, replace, or remove any fact. Uploaded evidence is never assumed authentic, and its presence never alone proves a requirement is met.
+
+CHECKLISTS, REMINDERS, AND DRAFTING
+Checklist items: mark complete/in progress/blocked, add notes, set a personal target date, assign priority, link evidence, export/print, track progress.
+Distinguish: official document deadline, personal target date, expiry date, reminder date. In-app deadline calendar and reminders. Do NOT claim email/SMS/push notifications exist unless actually configured — if not, say reminders are in-app only.
+Draft generation: help prepare application responses, cover letters, or proposal sections using the user's verified profile data — always show which facts were used and flag anything unverified that the user should check before sending.
+Multilingual explanations: offer summaries and key extracted fields in languages the user selects, clearly marked as translated/explained content, not a replacement for the original document's legal wording.
+
+MULTI-DOCUMENT INTELLIGENCE
+Compare multiple tenders, scholarships, job descriptions, contract versions, policies, or certificates. Identify common requirements, conflicts, missing information, changed clauses, changed deadlines. Build a combined checklist across documents. Keep originals unchanged.
+
+SPREADSHEET INTELLIGENCE
+For XLSX/XLS/CSV: sheets, columns, data types, record counts, totals, averages, min/max, missing values, duplicates, outliers, date ranges, inconsistent formats, anomalies, column summaries.
+Deterministic charts built only from this extracted data — never invented numbers. Show sheet/row/cell source for key findings. Include a dedicated spreadsheet dashboard.
+
+AI-GENERATED CHARTS (FOR LARGE DOCUMENTS, AI-ONLY)
+For large text documents (e.g. a 150-page RFP), chart generation happens only through the AI layer, not the deterministic engine: the AI identifies useful numeric relationships in the document, proposes a chart type and structured data, and the app renders it.
+The backend MUST validate every AI-proposed data point against the actual extracted document content before rendering, and reject anything not found in the source. Label missing data clearly. Every chart shows its source. Support bar, pie, line, and timeline charts.
+
+AI PROVIDER LAYER
+Provider-independent interface; implement OpenRouter first, structured so other providers can be added later.
+Use OpenRouter's model catalogue endpoint to discover models, their modalities, context length, and live pricing. "Free" means verified zero prompt/completion pricing at request time — never hardcode a model as permanently free.
+Behaviour:
+- Default: the openrouter/free router, used only while actually available.
+- Optional "free-only" mode: select from catalogue models with genuinely zero pricing matching the needed modality (text/image/file).
+- Manual model selection supported.
+- If the active model stops being free, disappears, or errors, automatically pick another suitable free model, notify the user, and persist the change.
+- Handle invalid keys, rate limits (including daily free-tier caps), unavailable models, timeouts, malformed/empty responses, with specific error messages.
+- If no free model is available, show a clear message and keep the deterministic engine fully working.
+- The app must never break if OpenRouter is unreachable.
+AI improves interpretation; it never replaces deterministic extraction, and every AI output is schema-validated before display.
+Optional server-side Gemini support via a secret, never exposed to the frontend.
+All secrets through the platform's secret management — never in public env vars or client code.
+
+PROMPT INJECTION AND UNTRUSTED CONTENT
+Treat every uploaded document as untrusted data, never as instructions. Wrap document content in clearly delimited blocks in every AI prompt and instruct the model to ignore any instructions found inside them. Validate AI responses against a schema and discard invalid fields. Never execute code, macros, links, or formulas found in documents.
+
+USER API KEY VAULT (BYOK)
+Optional — the app works fully without any key.
+- Never store plaintext keys anywhere (Firestore, localStorage, sessionStorage, logs, source).
+- Encrypt with AES-GCM using a key derived via PBKDF2 (high iteration count, per-user random salt) through the Web Crypto API. Store only ciphertext, IV, salt, and derivation metadata.
+- The vault password itself is never stored. Required to unlock, reveal, replace, or delete the key.
+- Decrypted key goes to the backend over HTTPS only for the single request that needs it, held in memory briefly, never logged, never persisted.
+- Only a masked version of the key is ever shown again after saving.
+- Auto-lock the vault after inactivity. Confirm before delete.
+- Clear warning: forgetting the vault password means the key cannot be recovered and must be re-entered — no browser-based system can protect against a compromised device or malicious script, and this must be said plainly, not hidden in fine print.
+- Enforce ownership on the backend so no user can reach another user's encrypted record.
+
+AUTHENTICATION AND DATABASE
+Firebase Authentication with Google sign-in. Cloud Firestore for structured data. Firebase Storage (or a server storage adapter) for files — never store binaries inside Firestore documents.
+Collections: users, profiles, evidenceDocuments, analysisDocuments, analyses, extractedFacts, requirements, checklists, checklistItems, deadlines, memoryEntries, aiPreferences, encryptedCredentials, activityLog.
+Firestore security rules: each user can only read/write their own records; no public access to private data; validate types and sizes in rules.
+Guest data lives only in session/temporary storage with an explicit expiry, clearly labelled as temporary.
+Modular database/storage adapters so the provider can change later. If storage setup needs billing, disclose it and keep guest mode working instead of failing silently.
+
+DOCUMENT MEMORY
+Application-specific, not a generic chat memory. Stores only what the user saves or permits: profile facts, qualifications, skills, experience, company capabilities, certifications, past projects, saved documents, previous analyses, deadlines, checklist progress, extracted facts.
+Reused only with permission, always showing where a reused fact came from. Users can view, edit, delete, clear history, disable memory, and control reuse. Never silently treat an old fact as current — re-check expiry.
+
+DEMO MODE
+Clearly labelled DEMO DATA banner throughout. Include a sample scholarship notice, a sample tender, a sample job description, a sample contract, and a sample applicant spreadsheet, all fictional. Must run the real pipeline end to end: upload/select, process, summarise, extract requirements, show dates, compare against a sample profile, show risk indicators, build a checklist, show source references. Visitors explore everything without personal files or a key.
+
+EXPORTS
+PDF analysis report, CSV extraction, checklist export, spreadsheet summary, comparison report, plain-text summary — each clearly separating deterministic facts, AI-assisted interpretation, user-confirmed items, and unverified items, with source references intact.
+
+DESIGN SYSTEM — "INTELLIGENCE IN MOTION"
+Premium, futuristic, cinematic, editorial, precise, technologically sophisticated.
+Avoid: generic AI templates, excessive purple gradients, generic robot illustrations, boring admin styling, rounded cards everywhere, overloaded screens, excessive glassmorphism, random decorative animation.
+Palette: deep obsidian, near-black graphite, warm white, steel grey, with electric lime as a sparing accent; muted status colours for success/warning/danger/neutral.
+Typography: a distinctive display face for headlines, a highly readable face for interfaces, strong hierarchy.
+Design tokens for colour, typography, spacing, radius, shadow, surface, motion timing, interactive states, status colours. Usable responsive layouts at every size.
+
+MOTION SYSTEM — ENTIRE APPLICATION, EXTREMELY CINEMATIC
+Motion coverage applies to the whole product, not just the landing page. Intensity is extremely cinematic and experimental — bold, immersive, dramatic transitions, interactive depth.
+Use Motion (Framer Motion) as the core library, GSAP + ScrollTrigger for landing-page scroll sequences, and Three.js only for a small hero element if it clearly helps. Avoid unnecessary dependencies.
+Hard rule: every animation must communicate something, build anticipation, or make an interaction memorable — never animate purely to decorate. Routine, everyday interactions still get fast, quiet motion, not constant spectacle.
+- Landing: dramatic entrance, animated headline typography, floating document layers, atmospheric background, scroll-driven reveals, parallax depth, dramatic section transitions.
+- Dashboard: staggered panel entrance, pointer-responsive hover depth, fluid navigation transitions, animated metrics, upload feels like entering an analysis sequence.
+- Document scanning: a scanning beam travels across the document, detected information emerges progressively, sensitive information visibly redacts in view.
+- Analysis results: requirements assemble dynamically, deadlines surface with emphasis, Have/Missing/Verify reveals in stages.
+- Charts: lines draw in, numbers count up, data transitions smoothly into position.
+- Comparison: requirements visually connect to evidence; status transitions animate; readiness indicator animates.
+- Checklists: progress animation, smooth completion transitions, animated priority changes.
+- Profile/vault: documents enter and organise into a layered, interactive evidence library.
+- Settings/AI config: more restrained motion, same visual identity.
+Respect prefers-reduced-motion. Simplify or disable heavy effects on mobile/low-powered devices. Motion must never block a critical task, and performance/readability/accessibility stay high throughout.
+
+INTERACTION QUALITY
+Every visible control does something real — no dead buttons, no fake upload controls. Never present fabricated AI output as if it came from the document. Never show fake database records as real user data. Every form validates input. Every async action shows loading/success/error/retry states. Provide empty states, skeleton loaders, helpful error messages, and confirmation dialogs for destructive actions.
+
+ACCESSIBILITY AND PERFORMANCE
+Keyboard navigation, accessible labels, semantic HTML, contrast-conscious colours, reduced motion, lazy loading, efficient parsing, sensible upload limits, graceful error handling, performance-conscious animation.
+
+TECHNICAL ARCHITECTURE
+Frontend: React, TypeScript, Tailwind CSS, Motion, Recharts or Chart.js.
+Backend: Node.js with clearly separated API routes.
+Keep business logic OUT of large React components. Separate services: UI components, pages, API services, database services, storage adapters, document parsers, OCR service, classification engine, requirement extraction, privacy detection, redaction, AI provider adapter, model selection, comparison engine, checklist generator, deadline engine, export services, vault service, schema validators.
+TypeScript types for every major data model. Schema-validate (e.g. Zod) all inputs and all external AI responses.
+Protect backend routes with authentication, ownership checks, input validation, upload limits, and rate limiting where feasible.
+Never place secrets in public env vars or client code. Provide a .env.example with placeholder names only, and document every external dependency and the credential it needs.
+
+BUILD PRIORITY (BUILD ALL, IN THIS SEQUENCE)
+Tier 1: application structure, design system, landing page, dashboard, navigation, guest experience, Firebase foundation, demo mode.
+Tier 2: upload system, parsing for all formats, classification, deterministic analysis, structured results with source references, privacy detection/redaction before any AI step.
+Tier 3: AI provider adapter, OpenRouter catalogue integration, free-model selection/fallback, BYOK encrypted vault, AI interpretation, document Q&A, AI-only chart generation with validation.
+Tier 4: profile, evidence vault, Have vs Missing comparison, checklists, deadlines/expiry, document memory.
+Tier 5: multi-document comparison, spreadsheet intelligence dashboard, risk indicators, version/change comparison, exports, advanced privacy controls, draft generation, multilingual explanations.
+Tier 6: cinematic motion refinement, performance tuning, responsive polish, accessibility audit, testing, deployment prep.
+Do not cut any tier's features to speed up earlier tiers — keep the architecture ready for all of them.
+
+TESTING — MUST ACTUALLY RUN, NOT JUST BUILD
+Run the app and fix build/runtime errors. Verify:
+- App builds; all routes load
+- Dashboard navigation works
+- Guest analysis works end to end
+- Auth works when configured, degrades cleanly when not
+- Every supported format uploads and parses (use synthetic test files)
+- OCR works where configured; low-confidence output is flagged
+- Sensitive-data detection runs before any AI request; redacted copy (not original) goes to AI
+- AI works with a valid key; invalid keys give clear errors
+- Deterministic processing works with no key at all
+- OpenRouter free-model discovery and fallback behave correctly
+- Vault encrypts/unlocks/changes/deletes correctly; plaintext never persists anywhere
+- User data is isolated; Firestore rules block cross-user access
+- Comparison logic returns correct statuses
+- Checklist actions persist after refresh
+- Exports download with source references intact
+- Mobile layout and reduced motion both work
+- Empty, loading, and error states all work
+Do not claim any integration works unless it has actually been tested.
+
+FINAL OUTPUT REQUIRED FROM YOU
+1. What was built and where it lives in the project.
+2. What is genuinely implemented and tested.
+3. What requires credentials/configuration (Firebase, OpenRouter key, Gemini key, storage, OCR service).
+4. What is incomplete or planned, and why.
+5. Step-by-step test instructions for: guest analysis, demo mode, upload, sign-in, saving, adding a key, comparison, checklist, export.
+6. Known limitations — especially OCR accuracy, image redaction limits, verification limits, and free-model availability.
+
+Make reasonable engineering decisions independently. Do not repeatedly ask for approval on small choices. Do not remove requested functionality for convenience. Do not create fake working states.
+
+BEGIN IMPLEMENTATION.

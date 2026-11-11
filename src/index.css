@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --bg-obsidian: #060608;
+  --bg-platinum-onyx: #0B0D12;
+  --bg-platinum-elevated: #12151E;
+  --bg-platinum-card: #161A24;
+  --gold-imperial: #E5C158;
+  --gold-burnished: #D4AF37;
+  --gold-champagne: #F5E6B3;
+  --platinum-pure: #F5F6F8;
+  --platinum-brushed: #CBD5E1;
+  --platinum-sterling: #94A3B8;
+  --platinum-muted: #64748B;
+  --border-platinum: rgba(226, 232, 240, 0.12);
+  --border-gold: rgba(229, 193, 88, 0.38);
+}
+
+body {
+  background-color: #060608;
+  color: #F5F6F8;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Luxury Metallic Gold & Platinum Gradient Typography */
+.text-gold-platinum {
+  background: linear-gradient(135deg, #FFF6D6 0%, #E5C158 38%, #D4AF37 65%, #E2E8F0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-platinum-sheen {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 55%, #94A3B8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Metallic Gold & Platinum Button & Card Surfaces */
+.btn-gold-imperial {
+  background: linear-gradient(135deg, #F3E3AD 0%, #E5C158 45%, #C99E2C 100%);
+  color: #060608;
+  box-shadow: 0 0 30px rgba(229, 193, 88, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-gold-imperial:hover {
+  background: linear-gradient(135deg, #FFF2C2 0%, #ECCB65 50%, #D4AF37 100%);
+  box-shadow: 0 0 42px rgba(229, 193, 88, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.surface-platinum-card {
+  background: linear-gradient(180deg, rgba(22, 26, 36, 0.88) 0%, rgba(12, 14, 20, 0.94) 100%);
+  border: 1px solid rgba(226, 232, 240, 0.11);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.surface-gold-card {
+  background: linear-gradient(145deg, rgba(26, 24, 18, 0.92) 0%, rgba(12, 13, 18, 0.96) 100%);
+  border: 1px solid rgba(229, 193, 88, 0.32);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(229, 193, 88, 0.08), inset 0 1px 0 rgba(245, 230, 179, 0.15);
+}
+
+/* Refined Gold & Platinum Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #08090C;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #333846 0%, #D4AF37 100%);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E5C158;
+}

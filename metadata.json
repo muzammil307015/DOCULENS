@@ -1,0 +1,6 @@
+{
+  "name": "DOCULENS",
+  "description": "Universal AI Document Intelligence Platform — Turn complex documents into clear requirements, verified evidence, and your next best actions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

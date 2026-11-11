@@ -1,0 +1,1180 @@
+# DOCULENS — DEEP ENGINE REPAIR, REAL DOCUMENT EXTRACTION, RFP INTELLIGENCE AND AI REBUILD
+
+You are modifying my EXISTING DOCULENS application.
+
+DOCULENS is a Universal Document Intelligence Platform for all people and organisations who struggle to read, understand, check, compare or take action on complicated documents.
+
+It is not a student-only application.
+
+Target users include individuals, families, students, parents, job seekers, employees, professionals, freelancers, startups, small and large businesses, colleges, NGOs, and organisations.
+
+The core promise:
+
+"Upload a document. Understand what it actually says. Discover what matters. Know exactly what to do next."
+
+IMPORTANT: Do not just generate another attractive UI. The existing application already has many screens, but the real extraction, report accuracy and AI experience are not reliable.
+
+First inspect the existing source code, architecture, components, APIs, parser implementation, database, AI integration and error logs. Then repair the actual application.
+
+Do not recreate the app from scratch unless a specific existing component is fundamentally unusable. Preserve working features.
+
+Do not just give me an explanation or a list of proposed changes. Implement the changes, run the tests that are possible, and clearly distinguish verified features from features requiring external services or configuration.
+
+==================================================
+PHASE 1 — FIX THE DOCUMENT-TO-REPORT CONNECTION
+==================================================
+
+THIS IS THE MOST IMPORTANT BUG TO FIX.
+
+The current recording shows a serious possibility that demo/sample content is being displayed as if it belongs to a real uploaded document.
+
+The RFP screen displays an explicitly fictional SmartCity IoT tender sample, even though the user expects an uploaded document to be analysed.
+
+The report also sometimes displays:
+- The PDF header "%PDF-1.5" as its title.
+- Incorrect page counts.
+- Implausible word counts.
+- Generic or unrelated information.
+- An incorrect document category.
+- Financial values generated from ordinary digits.
+- Generic requirement lists.
+- Confusing extraction-quality claims.
+
+Build a strict file-to-report architecture.
+
+For every real upload:
+
+1. Generate an immutable documentId.
+2. Store the original filename.
+3. Calculate a SHA-256 content hash.
+4. Store the file metadata.
+5. Send the actual binary file to the extraction backend.
+6. Store the actual parser output.
+7. Store a structured extraction audit.
+8. Run analysis only against that specific documentId.
+9. Store the resulting report linked to that same documentId and content hash.
+10. Display the original uploaded filename in the report.
+
+Never use a sample document, fictional analysis, cached report from another document, generic placeholder, or fallback data to populate a real user's report.
+
+Demo mode must be entirely separate.
+
+Show a permanent and unmistakable "DEMO — FICTIONAL SAMPLE DATA" label whenever a demo document is being explored.
+
+If a real upload is being analysed, the report must be generated from that actual uploaded file. A failed upload or parser must produce an error, not a demo report.
+
+Add a test that uploads two different files with very different content and verifies that their extracted text and reports never get mixed.
+
+==================================================
+PHASE 2 — REAL DOCUMENT EXTRACTION ENGINE
+==================================================
+
+Integrate a proper structured extraction pipeline.
+
+Primary recommendation:
+DOCILING — https://github.com/docling-project/docling
+
+Official documentation:
+https://docling-project.github.io/docling/
+
+Docling-Serve:
+https://github.com/docling-project/docling-serve
+
+Inspect the actual deployment architecture before deciding how to integrate it.
+
+If the current application backend cannot execute Python packages, create a separate Python document-processing service and securely connect it to the application through an authenticated API.
+
+Do not import Python-only packages into a browser and claim they are working.
+
+Use a real deployed service. Include health checks, API authentication, upload limits, processing timeouts, retries, logging, and clear deployment instructions.
+
+Recommended primary processing pipeline:
+
+A. PDF native text extraction and page inspection.
+
+B. Docling structured extraction for document layout, paragraphs, headings, lists, tables and provenance.
+
+C. OCR for scanned pages or image regions that genuinely require it.
+
+D. Spreadsheet-specific parsing and data validation.
+
+E. Parser-output validation and quality checks.
+
+Do not force OCR on every page just because the user uploaded a PDF.
+
+The parser must identify whether the page already has a readable text layer. Use native extraction where possible and OCR where necessary.
+
+For mixed PDFs, process each page appropriately. A PDF can contain both selectable text and scanned pages.
+
+OCR must not replace existing correct native text without a reason.
+
+For old Office formats such as DOC, XLS and PPT, detect whether LibreOffice or the required conversion dependency is available. If not, show a proper unsupported/conversion error rather than claiming success.
+
+SUPPORTED FORMAT TARGETS:
+
+PDF, DOCX, DOC, RTF, ODT, TXT, MD, HTML, XLSX, XLS, CSV, ODS, PPTX, PPT, ODP, PNG, JPG, JPEG, TIFF, WEBP and BMP.
+
+Only display a format as supported after the appropriate parser has actually been integrated and tested.
+
+## Full extraction requirements
+
+For PDF:
+- Detect document page count.
+- Extract every page.
+- Preserve original page numbers.
+- Extract text in reading order.
+- Detect headings and sections.
+- Identify tables.
+- Preserve table content and row/column structure.
+- Detect page headers and footers where possible.
+- Identify blank pages.
+- Detect pages with no usable native text.
+- Run OCR on pages that need it.
+- Preserve source coordinates/provenance when available.
+
+For DOCX:
+- Extract headings, paragraphs, lists and tables.
+- Preserve logical order.
+- Identify headers and footers where accessible.
+- Extract tables correctly.
+
+For XLSX and XLS:
+- Read every accessible worksheet.
+- Preserve sheet names.
+- Extract all rows and columns.
+- Preserve cell positions.
+- Identify headers.
+- Distinguish formulas from stored values.
+- Preserve date, percentage and currency formatting where available.
+- Detect merged cells and blank regions.
+- Avoid silently dropping worksheets.
+
+For CSV:
+- Detect delimiter and encoding.
+- Identify headers and column types.
+- Preserve all records.
+- Handle quoted values and embedded commas.
+
+For PPTX and PPT:
+- Extract each slide's text.
+- Preserve slide numbers and ordering.
+- Extract accessible tables.
+- Identify chart titles, captions and notes where available.
+
+For images and scanned pages:
+- Use OCR.
+- Preserve the page or image identity.
+- Report OCR confidence where the engine provides it.
+- Show low-confidence text for manual verification.
+
+## Extraction audit
+
+Create an actual extraction audit record for each document.
+
+Store:
+
+- originalFilename
+- documentId
+- SHA-256 contentHash
+- detectedFormat
+- parserName
+- parserVersion
+- expectedPageCount
+- successfullyParsedPages
+- pagesWithUsableText
+- blankPages
+- OCRPages
+- nativeTextPages
+- wordsPerPage
+- charactersPerPage
+- totalWordCount
+- tableCount
+- worksheetCount
+- slideCount where applicable
+- cell/row provenance where applicable
+- extractionWarnings
+- extractionTimestamp
+- processingDuration
+- extractionStatus
+
+Add an "Inspect extracted content" interface.
+
+Users must be able to inspect:
+- The original document's page/sheet list.
+- The actual extracted text.
+- Extracted tables.
+- OCR output.
+- Warnings.
+- Page-level extraction quality.
+
+The report must never pretend that a document was fully extracted if some pages are missing.
+
+## Hard extraction-quality gate
+
+Before allowing analysis, validate the entire extraction result.
+
+For a PDF:
+- Compare expected and parsed page counts.
+- Check page-level text coverage.
+- Detect suspiciously short extraction results.
+- Detect missing pages.
+- Check whether the document contains a text layer.
+- Check that the extracted file corresponds to the uploaded content hash.
+
+For the attached WCI RFP test file, the baseline is:
+
+- Original document: 32 pages.
+- All 32 pages contain selectable text.
+- Local baseline extraction: approximately 9,565 words.
+- It should be processed as an existing text PDF, not treated as an image-only document.
+
+This is a test fixture, not a hardcoded analysis answer.
+
+The system must not pass this document as successfully extracted if it returns only 1 page and 94 words.
+
+Use the complete 32-page result and compare the extracted content with the test baseline. A materially incomplete extraction must fail validation and display the pages that need attention.
+
+Do not display "90% verified" or "100% verified" unless a real, defined validation process supports that label.
+
+==================================================
+PHASE 3 — MAKE DETERMINISTIC ANALYSIS USEFUL
+==================================================
+
+Non-AI analysis should not be a weak fallback.
+
+It must be a useful independent analysis engine that works without an AI key.
+
+Use the actual structured extracted content.
+
+Implement:
+
+- Document category detection.
+- Document title and issuer detection.
+- Document number/reference detection.
+- Dates and deadline extraction.
+- Currency-aware amount extraction.
+- Percentage extraction.
+- Eligibility and minimum qualification extraction.
+- Required-document extraction.
+- Response/submission instructions.
+- Named parties and organisation details.
+- Important clauses and obligations.
+- Technical requirements.
+- Commercial terms.
+- Evaluation criteria and points.
+- Penalties and risks.
+- Missing or unclear information.
+- Contradictory values.
+- Action checklist generation.
+- Source page and section references.
+
+Every extracted fact must have:
+
+1. A structured value.
+2. A source reference.
+3. A supporting text snippet.
+4. A fact category.
+5. An extraction method.
+6. A verification or confidence status.
+
+Use these statuses:
+
+- Found in source
+- Likely match — verify
+- Not found
+- Unclear
+- Contradictory
+- Not applicable
+- Not specified in this document
+
+Never invent a date, amount, percentage, issuer, mandatory requirement, reference number, or document title.
+
+## Fix incorrect currency extraction
+
+The current application displays many values like $0, $1, $2, $3, etc. as financial allocations.
+
+This is unacceptable.
+
+A number is not automatically a currency amount.
+
+Only classify a number as monetary when the surrounding text, currency symbol, currency code, column heading, or context actually supports it.
+
+Store:
+- Original amount text
+- Numeric amount
+- Currency
+- Amount type
+- Supporting context
+- Source page/section/cell
+
+Do not invent USD or any other currency where the source does not state it.
+
+Distinguish:
+- Contract value
+- Maximum budget
+- Minimum budget
+- Hourly rate
+- Total fee
+- Security deposit
+- Grant amount
+- Financial guarantee
+- Payment percentage
+- Tax amount
+
+If no total contract value is stated, show "Not specified in this document."
+
+## Improve date extraction
+
+Preserve date meaning and context.
+
+Distinguish:
+- Publication date
+- Question deadline
+- Intent-to-participate deadline
+- Proposal deadline
+- Interview or presentation date
+- Evaluation period
+- Award date
+- Contract start/end
+- Renewal date
+- Expiry date
+
+Preserve time and timezone if given.
+
+Never convert an old deadline into an upcoming deadline.
+
+Calculate whether a date has passed using the current date and show the correct status.
+
+==================================================
+PHASE 4 — CREATE A DEDICATED RFP AND TENDER INTELLIGENCE TEMPLATE
+==================================================
+
+This is the first category-specific workflow to improve.
+
+When a document is classified as RFP, RFQ, RFI, tender, procurement notice, bid invitation or similar, use a dedicated RFP/Tender Intelligence report.
+
+The template must analyse the sections below.
+
+## SECTION 1 — RFP SNAPSHOT
+
+Extract:
+- Issuing authority/organisation.
+- RFP title.
+- RFP number/reference.
+- Publication date.
+- Amendment/addendum information.
+- Proposal deadline.
+- Submission timezone.
+- Submission email, portal or physical address.
+- Main contact details where stated.
+- Procurement category.
+- Contract type.
+- Contract term.
+- Opportunity status.
+
+Show a prominent status:
+
+- Open
+- Closing soon
+- Closed
+- Historical/expired
+- Cancelled, only if source supports it
+- Status unclear
+
+Do not confuse a historical document with a currently open opportunity.
+
+## SECTION 2 — EXECUTIVE OPPORTUNITY SUMMARY
+
+Explain in plain language:
+
+- What organisation issued the opportunity?
+- What are they trying to purchase or accomplish?
+- What services, products or work are requested?
+- What kind of vendors are they looking for?
+- Is this a direct project award, framework, master service agreement, or another procurement structure?
+- Is a budget disclosed?
+- Is work guaranteed after selection?
+- What happens after selection?
+- What is the overall opportunity's purpose?
+
+The explanation must be easy for a business owner or freelancer to understand.
+
+## SECTION 3 — COMPLETE SOLICITATION SCHEDULE
+
+Extract every schedule entry into a table:
+
+- Event
+- Date
+- Time
+- Timezone
+- Mandatory, encouraged or informational
+- Source page
+- Current status
+
+Do not omit events simply because they are not proposal deadlines.
+
+## SECTION 4 — SCOPE OF WORK
+
+Extract the actual scope of requested services.
+
+Group into:
+- Main objectives
+- Workstreams
+- Phases
+- Modules
+- Functional requirements
+- Technical requirements
+- Deliverables
+- Integrations
+- Operating environment
+- Hosting/cloud requirements
+- Security requirements
+- Data requirements
+- Reporting requirements
+- Localization/language requirements
+- Support and maintenance
+- Performance and scaling
+
+Keep each requirement separate.
+
+## SECTION 5 — ELIGIBILITY AND MINIMUM QUALIFICATIONS
+
+Extract every eligibility rule.
+
+For each:
+- Exact requirement.
+- Plain-language explanation.
+- Mandatory or optional.
+- Pass/fail implication if stated.
+- Evidence needed.
+- Supporting source.
+
+Do not convert a suggestion into a mandatory qualification.
+
+## SECTION 6 — MANDATORY RESPONSE REQUIREMENTS
+
+Extract all response components:
+- Cover page/title page.
+- Cover letter.
+- Technical proposal.
+- Financial proposal.
+- Resumes.
+- Certifications.
+- References.
+- Declarations.
+- Standard-agreement acceptance or redlines.
+- Attachments.
+- Signatures.
+- File format.
+- Language.
+- Page limits.
+- Submission method.
+
+Generate a detailed bidder checklist.
+
+## SECTION 7 — KEY PERSONNEL AND STAFFING
+
+Extract:
+- Required roles.
+- Qualifications.
+- Minimum experience.
+- Required certifications.
+- Resume requirements.
+- Contractor/subcontractor restrictions.
+- Staffing evidence.
+
+## SECTION 8 — COMMERCIAL AND FINANCIAL REQUIREMENTS
+
+Extract:
+- Overall budget, if disclosed.
+- Per-unit pricing.
+- Rate cards.
+- Contract value.
+- Payment terms.
+- Retention/holdback.
+- Taxes and currencies.
+- Reimbursement.
+- Fixed-price or time-and-materials requirements.
+- Pricing submission format.
+- Contract term and renewal options.
+
+Always mark missing information.
+
+## SECTION 9 — EVALUATION AND SCORING
+
+Extract the exact scoring criteria.
+
+Create:
+- Scoring table.
+- Point allocation.
+- Subtotals.
+- Fee formula.
+- Minimum threshold.
+- Evaluation methodology.
+- Disqualification conditions, only where stated.
+
+Verify that subtotals add correctly to the stated total.
+
+Do not invent hidden scoring weights.
+
+## SECTION 10 — CONTRACTUAL AND COMPLIANCE OBLIGATIONS
+
+Extract:
+- Intellectual property ownership.
+- Confidentiality.
+- Third-party licences.
+- Data protection.
+- Security.
+- Insurance.
+- Indemnity.
+- Liability.
+- Termination.
+- Subcontracting.
+- Offshore work.
+- Audit rights.
+- Acceptance and rejection.
+- Governing law.
+- Dispute resolution.
+- Work authorisation and commencement restrictions.
+
+Flag any clause that needs legal review. Do not give a definitive legal judgement.
+
+## SECTION 11 — RISKS AND RED FLAGS
+
+Identify:
+- Impossible or very tight timelines.
+- Ambiguous language.
+- Contradictory terms.
+- Missing attachments.
+- Missing pricing details.
+- Unclear evaluation provisions.
+- Strict eligibility requirements.
+- Unusual payment conditions.
+- Extensive IP transfers.
+- Security or compliance obligations.
+- Unclear work allocation.
+- Requirements deferred to later documents.
+
+Explain why each matters and cite its source.
+
+A risk indicator is not proof of fraud or misconduct.
+
+## SECTION 12 — MISSING INFORMATION
+
+Use an explicit "Not specified in this document" section.
+
+Examples:
+- Budget not disclosed.
+- Active-user forecast not specified.
+- Certain technical requirements deferred to a future Statement of Work.
+- Referenced attachments not included in the uploaded file.
+
+Do not fill missing information using generic assumptions.
+
+## SECTION 13 — QUESTIONS AND ANSWERS
+
+Extract any Q&A or FAQ attachment.
+
+For every item, preserve:
+- Question number.
+- Original question.
+- Answer.
+- Page.
+- Any clarification or information deferred to another document.
+
+## SECTION 14 — BIDDER RECOMMENDATIONS
+
+Create a practical action plan:
+
+- Eligibility checks first.
+- Evidence and certificates to collect.
+- Required personnel and resumes.
+- Technical proposal sections to prepare.
+- Pricing questions to resolve.
+- Contract clauses to review.
+- Clarifications to ask.
+- Submission checklist.
+- Deadline reminders.
+
+Separate source requirements from DOCULENS-generated recommendations.
+
+==================================================
+PHASE 5 — USE THE ATTACHED WCI RFP AS A REAL REGRESSION TEST
+==================================================
+
+Use this actual test document:
+
+"rfp-2021_02_msa_enterprisesolutionitprofessionalservices-20210607-en.pdf"
+
+Expected metadata:
+
+- Title: Enterprise Solution – Professional IT Services.
+- RFP: 2021-02.
+- Organisation: Western Climate Initiative, Inc.
+- Release: June 7, 2021.
+- Original pages: 32.
+- Full document contains approximately 9,565 words in the local baseline extraction.
+
+EXPECTED EXTRACTED CONTENT:
+
+A. SOLICITATION SCHEDULE
+
+- June 7, 2021: RFP release.
+- June 14, 2021, 8:00 PM Eastern: Intent to Participate.
+- June 18, 2021, 11:00 AM Eastern: RFP presentation.
+- July 9, 2021, 8:00 PM Eastern: Written questions deadline.
+- July 23, 2021: Responses to questions.
+- August 6, 2021, 8:00 PM Eastern: Acceptance/revisions to standard terms.
+- August 20, 2021: Proposal deadline; time not specified.
+- August 30–September 10, 2021, 11:00 AM–8:00 PM Eastern: Technical conference.
+- September 13–October 8, 2021: Evaluation.
+- October 11–29, 2021: Contract awards and negotiations.
+
+All these dates are historical. As of the current date, the report must not call them upcoming deadlines.
+
+B. OPPORTUNITY
+
+WCI wants qualified software-development contractors to help build a consolidated platform for a single market registry and emission-allowance auctions.
+
+There are two principal phases:
+- Auction Project, already underway.
+- Registry Project, to develop and test the registry web application.
+
+The purpose is to establish Master Services Agreements. Individual work is later bid through separate scopes of work.
+
+There is no guaranteed work just because a contractor receives an MSA.
+
+C. REGISTRY REQUIREMENTS
+
+- Official record for issuing, transferring, tracking and retiring compliance instruments.
+- Tracking of emissions allowances and offsets.
+- Support transfers between linked programmes.
+- Prevent transactions between unlinked programmes.
+- Independent operation across jurisdictions.
+- Scalability for future jurisdictions.
+- English and French support, with future language extensibility.
+- Cloud architecture primarily using AWS.
+- Jira/Confluence-based project management.
+- REST APIs, security, reporting, scaling, storage, queues and backups.
+- Separate test environment.
+- CI/CD and Agile approach.
+- Built-in day-to-day operational functions.
+
+D. MINIMUM QUALIFICATIONS
+
+- Three years of custom software-development experience for the proposer as of January 1, 2021.
+- Key personnel with at least three years of relevant experience and necessary certifications.
+- No specified types of relevant disputes/litigation in the previous two years or currently.
+- No bankruptcy filings in the previous three years and no pending bankruptcy.
+
+E. RESPONSE CHECKLIST
+
+- Title page.
+- Cover letter, maximum two pages.
+- Technical proposal, maximum 20 pages.
+- Attachment A questionnaire response.
+- Corporate experience.
+- Resumes.
+- Conflict-of-interest discussion.
+- General project requirements response.
+- At least three references.
+- Fee proposal.
+- Requested Standard Agreement revisions, where applicable.
+
+Response must be English, a single searchable PDF, emailed to rfp@wci-inc.org.
+
+Letter-size pages, minimum one-inch margins, 10-point Arial or similar, single spacing.
+
+The FAQ clarifies that resumes/other appendices are excluded from the technical-proposal 20-page limit.
+
+Flag the source discrepancy where the cover-letter section says "one-hundred and eight (180) days."
+
+F. KEY PERSONNEL
+
+- Project Manager.
+- Scrum Master.
+- UI/UX.
+- Software Engineer (Frontend/Backend).
+- IT Business Analyst.
+- Solutions Architect.
+- Sanity Tester.
+- DevSecOps Specialist.
+
+G. COMMERCIAL DETAILS
+
+- Hourly rates for key personnel for Years 1, 2 and 3.
+- Total average personnel rate.
+- Onshore/offshore rates separately.
+- MSA is described as a $0 contract.
+- Individual future scopes may be fixed-price or time-and-materials.
+- FAQ describes a 10% holdback released upon final project acceptance.
+
+H. EVALUATION
+
+Technical evaluation: 600 points.
+
+Corporate experience: 450 points, consisting of:
+- Similar projects: 50.
+- Resources and planning: 25.
+- Cloud applications: 50.
+- Enterprise platforms: 50.
+- Agile: 50.
+- Jira: 50.
+- Confluence: 25.
+- DevSecOps/security: 50.
+- Additional technical details: 100.
+
+Other technical categories:
+- Key personnel: 50.
+- General project requirements: 50.
+- Standard Agreement acceptance/revisions: 30.
+- References: 20.
+
+Fee evaluation: maximum 250 points.
+
+Lowest average Year 1 key-personnel rate receives 250 fee points. Other technically qualified proposals receive:
+
+(lowest average Year 1 rate / proposer average Year 1 rate) × 250.
+
+Total required score to receive an MSA: 650 or higher.
+
+I. RISK AND MISSING ATTACHMENT
+
+The actual uploaded PDF ends with an Attachment B heading and a note that the WCI Standard Agreement is attached separately. The agreement itself is not included.
+
+The report must say "Attachment B referenced but not included in uploaded file."
+
+Do not invent or summarise clauses from the missing agreement.
+
+J. INFORMATION DEFERRED TO FUTURE STATEMENTS OF WORK
+
+The RFP/FAQ indicates that certain details are not yet supplied in this document, including:
+- Future detailed work scopes.
+- Database size.
+- Future active-user projections.
+- Detailed data migration.
+- Detailed privacy/security compliance.
+- Some performance/acceptance criteria.
+- Specific future maintenance/support expectations.
+
+These must be marked "Not specified in this document" or "Deferred to future Statement of Work."
+
+TEST ACCEPTANCE:
+
+The uploaded file must:
+- Be identified as an RFP/tender, not admissions.
+- Show all 32 pages.
+- Extract the full text rather than only 94 words.
+- Identify the correct WCI title, issuer and RFP number.
+- Extract the complete historical schedule.
+- Identify the MSA structure and no-guaranteed-work caveat.
+- Extract all minimum qualifications.
+- Extract all submission components.
+- Extract the 8 key personnel roles.
+- Extract the complete scoring matrix and formula.
+- Flag the 108/180-day inconsistency.
+- Identify the missing Attachment B.
+- Cite source pages for the extracted facts.
+
+Do not hardcode the complete report. Use this as a regression-test fixture to verify that the real parser and analysis engine can extract the actual uploaded document.
+
+==================================================
+PHASE 6 — AI DOCUMENT INTELLIGENCE MUST ACTUALLY WORK
+==================================================
+
+The AI feature should add real understanding beyond regular text extraction.
+
+Implement an actual provider integration through the backend.
+
+Support OpenRouter and the existing supported provider settings.
+
+Official documentation:
+https://openrouter.ai/docs
+
+Do not show a model as connected just because a key is present in local storage.
+
+The connection must be tested against the selected model.
+
+Do not hardcode fake model availability or claim that every model is free.
+
+Fetch model information from the real provider catalogue and display:
+- Model name.
+- Provider.
+- Supported context size.
+- Capabilities.
+- Current published pricing/free status, where available.
+- Availability/error status.
+
+Allow the user to select a model.
+
+## AI features to implement
+
+1. Deep document explanation.
+2. Executive summary tailored to document type.
+3. Explain any selected clause.
+4. Ask questions about the uploaded document.
+5. Find exact answers with source citations.
+6. Compare multiple documents.
+7. Detect inconsistent dates, amounts and clauses.
+8. Explain technical and legal terminology in simple language.
+9. Generate a prioritised action plan.
+10. Identify possible risks and missing requirements.
+11. Explain spreadsheet anomalies and trends.
+12. Suggest charts based on actual extracted data.
+13. Compare a user's profile/evidence against document requirements.
+14. Generate draft responses/checklists where appropriate.
+
+The AI must receive actual extracted document content.
+
+For long documents:
+- Split content into page/section-aware chunks.
+- Maintain page provenance.
+- Retrieve relevant chunks for each question.
+- Never silently truncate the document.
+- Do not depend on one enormous prompt that exceeds the model context.
+- Return source-backed answers.
+
+Every important AI claim must carry:
+- Page/section/sheet/cell source.
+- Supporting excerpt.
+- Clear confidence or verification status.
+
+If AI cannot locate evidence, it must say that the source does not specify the answer.
+
+Use structured output and validate it against the real extracted content before presenting it.
+
+## AI errors and resilience
+
+Handle:
+- Missing API key.
+- Invalid API key.
+- Insufficient credits.
+- Rate limit.
+- Provider overloaded.
+- No available model.
+- Context limit exceeded.
+- Network timeout.
+- Invalid model response.
+- Malformed structured output.
+
+For 429/503 errors, honour Retry-After when supplied. Use a reasonable retry/backoff policy.
+
+If a selected model is unavailable:
+- Explain the error in normal language.
+- Offer an available alternative when configured.
+- Let the user retry.
+- Preserve the extracted report.
+
+Never print raw API JSON error objects in the user interface.
+
+If AI is offline, document extraction and deterministic analysis must still work.
+
+==================================================
+PHASE 7 — FIX PRIVACY AND REDACTION
+==================================================
+
+The current screen shows 368 entities detected, all 368 hidden, and zero visible.
+
+Investigate whether the app is over-redacting the source.
+
+Do not redact ordinary content simply because it is recognised as an entity.
+
+The intended default policy is:
+
+Redact or protect:
+- Phone numbers.
+- Personal home addresses.
+- Government identity numbers.
+- Bank and payment details.
+- Card numbers.
+- Passwords.
+- Access tokens and secrets.
+
+Preserve ordinary document content such as:
+- Person names.
+- Company names.
+- Organisation names.
+- Email addresses.
+- Document titles.
+- Standard legal, commercial and technical requirements.
+
+Make the policy configurable and reviewable.
+
+Provide a redaction preview.
+
+The original file must remain unchanged.
+
+Clearly distinguish:
+- Original file.
+- Locally extracted source.
+- Redacted copy sent to the external AI provider.
+
+Do not claim that the AI received all necessary information if it was removed during redaction.
+
+If OCR detects sensitive content, apply the same privacy process to OCR results.
+
+If the system cannot confidently inspect/redact a scanned page, warn the user and do not silently send unredacted content to an external model.
+
+==================================================
+PHASE 8 — MAKE REPORTS CLEAR AND TRUSTWORTHY
+==================================================
+
+The current report is cluttered and some labels are confusing.
+
+Redesign the report experience.
+
+Use a clear document overview followed by a readable report navigation.
+
+Suggested report sections:
+
+1. Overview.
+2. Executive Summary.
+3. Important Details & Deadlines.
+4. Scope / Main Content.
+5. Requirements & Evidence.
+6. Conditions & Clauses.
+7. Risks & Warnings.
+8. Action Plan.
+9. Ask This Document.
+10. Sources & Evidence.
+11. Extracted Text.
+12. Extraction Quality.
+
+For RFPs, use the dedicated RFP template described earlier.
+
+For scholarships, use scholarship-specific information.
+
+For jobs, extract role, skills, responsibilities, qualifications, location, compensation and application requirements.
+
+For contracts, extract parties, duration, obligations, payment, termination, liability, indemnity, confidentiality, IP, renewal and risky clauses.
+
+For admission documents, extract programme, eligibility, fees, deadlines, documents and application steps.
+
+For spreadsheets, use workbook-specific data analysis.
+
+Do not display a generic student checklist for every document type.
+
+Each category should use one shared extraction engine but its own analysis schema.
+
+## Source evidence
+
+Every important item must have a "View source" interaction.
+
+Selecting it should show:
+- The source page.
+- The section or heading.
+- The relevant extracted excerpt.
+- A way to inspect the original source if possible.
+
+Do not simply write "Source: Page 1" for all facts.
+
+## Readiness scoring
+
+The current report displays a readiness score and a confusing requirement count.
+
+If a readiness score is shown:
+- Explain the exact formula.
+- Identify which requirements count.
+- Distinguish missing evidence from failed eligibility.
+- Do not calculate readiness without enough evidence.
+- Do not imply that possessing a document proves that the requirement is satisfied.
+
+Use individual evidence statuses instead of misleading percentages wherever appropriate.
+
+==================================================
+PHASE 9 — SIMPLIFY THE WHOLE APPLICATION
+==================================================
+
+The current app looks crowded.
+
+Reduce the main navigation to:
+
+- Overview
+- New Analysis
+- My Documents
+- Compare
+- Profile
+- Settings
+
+Move less frequently used functions into appropriate pages or menus.
+
+Do not place all controls in one crowded top bar.
+
+Dashboard:
+- Prominent new-document upload.
+- Clear supported-format information.
+- Recent analyses.
+- Upcoming deadlines from actual documents.
+- Quick category shortcuts.
+- AI connection status in a compact location.
+- Simple first-use guidance.
+
+Upload screen:
+- Clear drag-and-drop zone.
+- Actual supported formats.
+- File size limit.
+- Upload progress.
+- Parser status.
+- Error recovery.
+- Clearly separated sample/demo area.
+
+Analysis:
+- Dedicated clean report layout.
+- Readable section navigation.
+- No crowded horizontal tabs.
+- Strong typography and hierarchy.
+- Simple explanations.
+- Clear evidence references.
+
+Profile:
+- Empty state unless a user actually adds information.
+- Never show fictional business turnover, company identifiers, tax IDs or documents as if they belong to the logged-in user.
+- Demo profile must be explicitly labelled fictional.
+- Provide edit, delete and permission controls.
+
+Settings:
+- AI provider connection.
+- Model selection.
+- Privacy/redaction.
+- Extraction engine health.
+- Storage and account settings.
+- Clear test-connection actions.
+
+Ensure all layouts work on desktop, tablet and mobile.
+
+==================================================
+PHASE 10 — RESTORE THE CINEMATIC MOTION DESIGN
+==================================================
+
+Our agreed visual direction is:
+
+"INTELLIGENCE IN MOTION"
+
+The entire application should have a sophisticated, cinematic and experimental animation language.
+
+The animation should be visible throughout the app, not only while a file is processing.
+
+Implement:
+- Cinematic landing-page entrance.
+- Headline reveal.
+- Smooth cursor follower on desktop.
+- Magnetic interaction on selected buttons.
+- Scroll-triggered section reveals.
+- Floating document cards.
+- Subtle layered depth and perspective.
+- Smooth dashboard transitions.
+- Animated upload experience.
+- Visible document scanning.
+- Progressive extraction feedback.
+- Highlighted detection of important text.
+- Animated report reveal.
+- Checklist progression.
+- Animated charts.
+- Smooth navigation transitions.
+- Consistent hover and focus states.
+
+Use a suitable motion system such as Framer Motion or GSAP, based on the existing architecture.
+
+Avoid adding heavy 3D effects everywhere.
+
+Respect reduced-motion settings and maintain good mobile performance.
+
+However, do not prioritise animation over extraction correctness.
+
+==================================================
+PHASE 11 — TEST EVERYTHING WITH REAL FILES
+==================================================
+
+Create a regression-test collection containing:
+
+1. The 32-page WCI RFP attached to this project.
+2. A text-based PDF.
+3. A scanned PDF.
+4. A mixed PDF with text and scanned pages.
+5. A scholarship notice.
+6. A DOCX agreement.
+7. A contract with important clauses.
+8. A multi-sheet XLSX workbook.
+9. A CSV dataset.
+10. A PPTX presentation.
+11. A JPG/PNG image containing text.
+
+For each file, record:
+
+- Actual filename.
+- Actual format.
+- Page/sheet/slide count.
+- Extraction status.
+- Extracted text count.
+- OCR status.
+- Table count.
+- Parser.
+- Source-reference quality.
+- Deterministic analysis status.
+- AI analysis status.
+- Report correctness.
+- Known limitations.
+
+Test files must not be substituted with canned demonstration data.
+
+Also test failure scenarios:
+- Corrupted PDF.
+- Password-protected PDF.
+- Empty file.
+- Unsupported format.
+- File larger than the allowed limit.
+- API unavailable.
+- Provider returns 503.
+- Provider returns 429.
+- OCR failure.
+- Only some pages extracted.
+
+==================================================
+FINAL IMPLEMENTATION RULES
+==================================================
+
+1. Inspect existing code before modifying it.
+2. Preserve real working features.
+3. Fix the extraction/report mismatch before improving decorative UI.
+4. Never fake document extraction.
+5. Never hardcode the WCI report as the result of a real upload.
+6. Never silently substitute sample data.
+7. Never display fabricated dates, currency values, page counts or word counts.
+8. Never misclassify an RFP as an admission document without evidence.
+9. Never claim that an external parser or AI model is connected without a successful real test.
+10. Keep API keys secure and never expose them in frontend source.
+11. Make every analysis result traceable to its source.
+12. Make the application understandable to non-technical people.
+13. Clearly identify services that require separate deployment or external configuration.
+
+EXECUTION ORDER:
+
+FIRST: Investigate the current extraction bugs and demo-data contamination.
+
+SECOND: Implement the real extraction pipeline and prove it against the 32-page WCI RFP.
+
+THIRD: Repair the deterministic analysis engine and RFP-specific intelligence.
+
+FOURTH: Connect and test real AI analysis.
+
+FIFTH: Repair privacy/redaction and source evidence.
+
+SIXTH: Rebuild the report layout and navigation.
+
+SEVENTH: Restore cinematic motion throughout the app.
+
+EIGHTH: Run the complete regression tests.
+
+FINAL RESPONSE REQUIRED:
+
+Give me a table of:
+- Feature
+- What was wrong
+- What you changed
+- Whether it was actually tested
+- Test result
+- What still needs external configuration
+
+Do not say "everything is complete" unless it has genuinely been implemented and tested.
+
+The most important outcome is that DOCULENS must correctly read an actual uploaded document, understand it, extract its important information, and generate a clear, complete and source-backed report.

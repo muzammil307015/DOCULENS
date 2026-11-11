@@ -1,0 +1,2117 @@
+# DOCULENS — UNIVERSAL DOCUMENT INTELLIGENCE PLATFORM
+## MASTER ANTIGRAVITY MULTI-AGENT DEVELOPMENT PROMPT
+### 10 SPECIALIST SUB-AGENTS | COMPLETE EXTRACTION | DEEP ANALYSIS | MULTI-PAGE UI | BUG FIXES | FEATURE PRESERVATION
+
+---
+
+# 0. PROJECT MISSION
+
+You are working on DOCULENS, an existing universal AI-powered document intelligence web application.
+
+Your mission is to transform the existing DOCULENS application into a polished, intelligent, reliable and comprehensive document analysis platform.
+
+DOCULENS must allow a user to upload a document, automatically understand its purpose, extract all available information, analyze every important detail, identify missing requirements, generate actionable checklists and present the findings through a beautiful, organized, multi-page user interface.
+
+The application must support individuals, students, employees, freelancers, startups, SMEs, enterprises, colleges, NGOs, government-related organizations and other users.
+
+This is an enhancement of an existing product.
+
+**DO NOT BUILD A NEW APPLICATION FROM SCRATCH.**
+
+Inspect the existing project, preserve its architecture and features, and improve what already exists.
+
+The final product should feel like a premium, modern, intelligent SaaS platform.
+
+---
+
+# 1. ABSOLUTE RULES — DO NOT VIOLATE
+
+## 1.1 NO INSTALLATION ON MY COMPUTER
+
+I do not authorize software installation on my system.
+
+You must not:
+
+- Install applications on my computer.
+- Install global npm packages.
+- Install Python packages globally.
+- Install operating-system dependencies.
+- Install Docker or change its configuration.
+- Use Homebrew, Chocolatey, apt, winget or similar package managers to install software.
+- Change my system PATH.
+- Change system environment variables.
+- Modify operating-system settings.
+- Install browser extensions.
+- Install background services.
+- Automatically install missing dependencies.
+- Run commands that modify the global environment.
+
+You may inspect existing dependencies and use the dependencies already available in the project.
+
+If something is missing:
+1. Identify the missing dependency.
+2. Explain why it is needed.
+3. Check whether an existing project dependency can perform the task.
+4. Request my permission before any installation.
+
+Do not run npm install, pip install, npm install -g or equivalent commands without my explicit approval.
+
+Do not silently modify package.json or lockfiles to introduce new dependencies.
+
+## 1.2 PRESERVE THE EXISTING PROJECT
+
+Do not remove or replace:
+
+- Existing React application.
+- Existing Vite configuration.
+- Existing Express/Node backend.
+- Existing TypeScript implementation.
+- Existing Python Docling service.
+- Existing OpenRouter integration.
+- Existing AI model-routing logic.
+- Existing authentication.
+- Existing database or storage integration.
+- Existing privacy scanning.
+- Existing upload system.
+- Existing document analysis features.
+- Existing user profile and evidence management.
+- Existing dashboards.
+- Existing working components.
+- Existing visual assets and branding.
+
+Do not replace working features with mock data.
+
+Do not create a second implementation of something that already exists and works.
+
+Do not introduce a completely different technology stack.
+
+Make targeted improvements to the existing codebase.
+
+## 1.3 PROTECT THE REPOSITORY
+
+Before editing:
+
+- Inspect the repository.
+- Inspect Git status.
+- Identify uncommitted user changes.
+- Preserve existing changes.
+- Create a safe checkpoint or branch if possible.
+- Map the application architecture.
+- Inventory existing pages and features.
+- Identify shared components and dependencies.
+
+Do not delete files simply because they appear unused.
+
+---
+
+# 2. MULTI-AGENT ORGANIZATION — EXACTLY 10 AGENTS
+
+Create 10 specialist sub-agents under one lead coordinator.
+
+The lead agent must own the integration process.
+
+Assign clear file ownership to prevent multiple agents from editing the same files simultaneously.
+
+## AGENT 1 — LEAD ARCHITECT & PRODUCT COORDINATOR
+
+Responsibilities:
+
+- Inspect the complete repository.
+- Understand the frontend, backend and Python service.
+- Inventory all existing features.
+- Map existing pages, components, routes and API endpoints.
+- Identify bugs and incomplete functionality.
+- Define the implementation plan.
+- Coordinate the other nine agents.
+- Prevent conflicting code changes.
+- Review agent output.
+- Integrate all changes.
+- Ensure feature preservation.
+
+Create a shared task list.
+
+Do not begin large-scale changes until the architecture inspection is complete.
+
+## AGENT 2 — DOCUMENT EXTRACTION & PDF SPECIALIST
+
+Responsibilities:
+
+- Fix PDF extraction.
+- Fix incomplete page extraction.
+- Fix extraction stopping at approximately 35%.
+- Inspect pdfjs-dist and existing parser implementations.
+- Fix page mapping.
+- Preserve headings, tables and reading order.
+- Handle large PDFs.
+- Detect empty or unreadable pages.
+- Validate extraction responses.
+- Avoid duplicated page content.
+
+Every available page must be processed.
+
+The system must not silently ignore later pages, tables, annexures or appendices.
+
+## AGENT 3 — DOCLING, OCR & PYTHON SERVICE SPECIALIST
+
+Responsibilities:
+
+- Inspect the existing FastAPI service.
+- Repair the Node/Python integration.
+- Fix service URL and port inconsistencies.
+- Correct incompatible endpoint usage.
+- Improve OCR detection and processing.
+- Fix temporary-file cleanup.
+- Validate Docling output.
+- Report partial extraction honestly.
+- Handle scanned and mixed PDFs.
+- Ensure OCR status is genuine.
+
+Critical known issue:
+
+The current Python service exposes synchronous POST /v1/convert, while the updated Node middleware attempts asynchronous Docling endpoints that may not exist.
+
+Make both services use one verified API contract.
+
+Never report successful extraction when only raw binary data was decoded.
+
+Do not claim OCR was performed unless it actually was.
+
+## AGENT 4 — BACKEND, JOBS & API SPECIALIST
+
+Responsibilities:
+
+- Inspect Express routes.
+- Fix upload handling.
+- Fix extraction jobs.
+- Fix API response consistency.
+- Fix status polling.
+- Fix timeout handling.
+- Fix cancellation where supported.
+- Fix service health checks.
+- Preserve existing backend functionality.
+- Ensure frontend and backend use matching endpoint paths and response structures.
+
+Avoid introducing new queues, Redis or infrastructure unless already available and necessary.
+
+## AGENT 5 — UNIVERSAL DOCUMENT CLASSIFICATION SPECIALIST
+
+Build or improve automatic document classification.
+
+DOCULENS must recognize document categories and subcategories.
+
+### Main document categories
+
+1. Scholarships and financial aid.
+2. RFPs and procurement tenders.
+3. College admissions.
+4. College rules and regulations.
+5. Jobs and careers.
+6. Government schemes.
+7. Government contracts.
+8. Legal agreements and contracts.
+9. Business documents.
+10. Financial documents.
+11. Reports and research papers.
+12. Invoices and receipts.
+13. Policies and compliance documents.
+14. Proposals and business plans.
+15. Academic documents.
+16. Other general documents.
+
+Also recognize:
+- Multiple document types in one upload.
+- Documents with multiple purposes.
+- Supporting annexures.
+- Amendments and addenda.
+- Documents that cannot be confidently classified.
+
+Requirements:
+
+- Identify the primary document type.
+- Identify secondary document types.
+- Explain why the document was classified that way.
+- Display classification confidence only when it can be meaningfully estimated.
+- Allow users to correct the classification.
+- Do not force an incorrect category.
+- Fall back to general document intelligence when classification is uncertain.
+
+Use document contents, headings, metadata and context rather than relying only on filenames.
+
+## AGENT 6 — DEEP ANALYSIS & AI INTELLIGENCE SPECIALIST
+
+Improve the analysis engine using the existing OpenRouter integration.
+
+Implement document-specific analysis templates described in Part 4.
+
+Requirements:
+
+- Extract source-grounded information.
+- Preserve page references.
+- Handle long documents through section-aware chunking.
+- Consolidate information from all chunks.
+- Detect conflicting dates or values.
+- Identify missing information.
+- Distinguish mandatory, optional and conditional requirements.
+- Avoid hallucinating missing facts.
+- Use the existing AI routing system.
+- Respect privacy redaction before external AI calls.
+
+## AGENT 7 — CHECKLIST, READINESS & DECISION ENGINE SPECIALIST
+
+Build actionable checklists, evidence matching, readiness indicators and decision support.
+
+Implement:
+
+- Scholarship application checklist.
+- RFP/tender submission checklist.
+- College admission checklist.
+- College compliance checklist.
+- Job application checklist.
+- Government scheme checklist.
+- Contract review checklist.
+- Financial document checklist.
+- General document action checklist.
+
+Allow users to interact with checklist items.
+
+Support states:
+
+- Not started.
+- In progress.
+- Completed.
+- Needs verification.
+- Blocked.
+- Not applicable.
+
+Preserve checklist progress using the existing database or storage system where available.
+
+Do not introduce a new storage system unnecessarily.
+
+## AGENT 8 — FRONTEND, MULTI-PAGE UI & DESIGN SPECIALIST
+
+Transform the existing frontend into a polished multi-page SaaS experience.
+
+Preserve DOCULENS branding and existing working functionality.
+
+Build a cohesive visual system.
+
+Responsibilities:
+
+- Landing/entry experience.
+- Dashboard.
+- Upload workspace.
+- Document analysis pages.
+- Document history.
+- Saved documents.
+- Checklists.
+- Evidence/profile area.
+- Settings and existing account pages.
+- Responsive navigation.
+- Tab and sub-tab navigation.
+- Beautiful loading and empty states.
+- Page transitions.
+- Scroll and hover animations.
+- Responsive layouts.
+- Fix clipping and overflow.
+- Fix horizontal sliders and carousels.
+
+Do not put the entire application on one giant page.
+
+## AGENT 9 — UI BUG FIXING, SECURITY & PERFORMANCE SPECIALIST
+
+Responsibilities:
+
+- Fix content being cut off.
+- Fix horizontal scrolling.
+- Fix navigation bugs.
+- Fix broken buttons.
+- Fix modal overflow.
+- Fix responsive layout issues.
+- Fix text clipping.
+- Fix overlapping elements.
+- Fix animation glitches.
+- Fix loading and stale state.
+- Check keyboard accessibility.
+- Check frontend performance.
+- Inspect privacy and security.
+- Protect API keys.
+- Prevent sensitive information from entering logs.
+- Preserve existing security features.
+
+Do not perform unnecessary redesigns.
+
+## AGENT 10 — QA, REGRESSION & FINAL INTEGRATION SPECIALIST
+
+Test the complete application.
+
+Check:
+
+- PDF extraction.
+- Scanned PDF extraction.
+- Long-document extraction.
+- Scholarship analysis.
+- RFP analysis.
+- College admission analysis.
+- Job analysis.
+- Contract analysis.
+- Financial document analysis.
+- Checklists.
+- Readiness scores.
+- Navigation.
+- Tabs.
+- Sub-tabs.
+- Horizontal sliders.
+- Responsive behavior.
+- Animations.
+- Existing application features.
+- Backend integration.
+- API error handling.
+
+Do not claim a test passed if it was not executed.
+
+---
+
+# 3. UNIVERSAL DOCUMENT ANALYSIS ENGINE
+
+This is the most important product feature.
+
+When a user uploads a supported file, DOCULENS must:
+
+1. Receive the file.
+2. Validate the file.
+3. Extract the available content.
+4. Detect whether OCR is required.
+5. Classify the document.
+6. Identify the issuing organization and document purpose where possible.
+7. Extract all relevant facts.
+8. Activate the correct analysis template.
+9. Analyze all pages and sections.
+10. Identify missing information.
+11. Generate relevant checklists.
+12. Generate action items.
+13. Provide page-level source references.
+14. Present the results in structured tabs and sub-tabs.
+
+The system must not provide only a summary.
+
+## GENERAL INFORMATION TO EXTRACT FROM EVERY DOCUMENT
+
+Where applicable, identify:
+
+- Document title.
+- Document type.
+- Document purpose.
+- Issuing organization.
+- Author or publisher.
+- Recipient or intended audience.
+- Document/reference number.
+- Publication date.
+- Effective date.
+- Expiry date.
+- Relevant jurisdiction.
+- Main subject.
+- Important parties.
+- Monetary values.
+- Important dates.
+- Mandatory requirements.
+- Optional requirements.
+- Conditions.
+- Responsibilities.
+- Risks.
+- Penalties.
+- Important definitions.
+- Required actions.
+- Contact details.
+- Official links.
+- Annexures and references.
+
+Not every field applies to every document.
+
+Use "Not specified in the document" when information is absent.
+
+Never invent a source, issuing organization, deadline, amount or eligibility condition.
+
+---
+
+# 4. SPECIALIZED DOCUMENT ANALYSIS MODULES
+
+## MODULE A — SCHOLARSHIP INTELLIGENCE
+
+When a scholarship is detected, show a dedicated scholarship analysis.
+
+### A1. Scholarship overview
+
+Extract:
+
+- Scholarship name.
+- Provider organization.
+- Government department, university, foundation, NGO or company offering it.
+- Administering organization, if different.
+- Official notification source.
+- Official website or application portal.
+- Scholarship reference number.
+- Country and state.
+- Academic year.
+- Scholarship cycle.
+- Intended beneficiaries.
+- Purpose of the scholarship.
+
+Clearly answer:
+
+**Who is giving this scholarship, and why is it being offered?**
+
+### A2. Financial benefits
+
+Extract:
+
+- Scholarship amount.
+- Currency.
+- Monthly, yearly, semester or one-time payment.
+- Tuition fee coverage.
+- Hostel allowance.
+- Book allowance.
+- Travel allowance.
+- Other benefits.
+- Maximum assistance.
+- Renewal conditions.
+- Payment schedule.
+- Number of awards, if available.
+
+Clearly distinguish:
+- Confirmed amount.
+- Maximum possible amount.
+- Reimbursement.
+- Direct payment.
+- Fee waiver.
+- Conditional financial benefit.
+
+### A3. Eligibility requirements
+
+Extract:
+
+- Nationality.
+- State or residency.
+- Age.
+- Academic qualification.
+- Current course.
+- Eligible institutions.
+- Minimum percentage.
+- Minimum CGPA.
+- Entrance exam requirements.
+- Family income limit.
+- Category restrictions.
+- Gender restrictions.
+- Disability requirements, if applicable.
+- Other mandatory conditions.
+- Renewal eligibility.
+- Disqualifying conditions.
+
+Clearly separate mandatory criteria from preferred criteria.
+
+### A4. Application deadlines
+
+Extract:
+
+- Application opening date.
+- Last submission date.
+- Exact submission time.
+- Time zone.
+- Correction period.
+- Verification period.
+- Merit list date.
+- Selection date.
+- Award announcement.
+- Renewal deadline.
+
+Display urgent deadlines prominently.
+
+### A5. Required document checklist
+
+Extract the actual required documents.
+
+Potential examples:
+
+- Identity proof.
+- Passport photograph.
+- Signature.
+- Previous academic marksheets.
+- Current admission proof.
+- Bonafide certificate.
+- Fee receipt.
+- Income certificate.
+- Caste/category certificate, where applicable.
+- Domicile certificate.
+- Bank account proof.
+- Disability certificate, where applicable.
+- Transfer certificate.
+- Other specified documents.
+
+For each item show:
+
+- Document name.
+- Mandatory/optional/conditional.
+- Original or photocopy.
+- Self-attested/notarized/digitally signed.
+- File format.
+- File size limit.
+- Issuing authority.
+- Validity period.
+- Source page.
+
+### A6. Application procedure
+
+Extract each application step in order.
+
+Show:
+
+- Where to register.
+- Required registration details.
+- Login process.
+- Application form steps.
+- Upload requirements.
+- Submission method.
+- Verification process.
+- Correction process.
+- How to track application status.
+- Contact/helpdesk information.
+
+### A7. Scholarship risks
+
+Identify:
+
+- Missing eligibility evidence.
+- Conflicting income limits.
+- Expired certificates.
+- Incorrect course restrictions.
+- Missed deadlines.
+- Renewal conditions.
+- Duplicate scholarship restrictions.
+- Incomplete application requirements.
+
+### A8. Scholarship recommendation
+
+When the user provides a profile or supporting documents, compare them with the scholarship.
+
+Use these statuses:
+
+- Appears eligible.
+- Potentially eligible.
+- Not eligible based on supplied evidence.
+- Needs verification.
+- Insufficient information.
+
+Never claim confirmed eligibility without adequate evidence.
+
+### A9. Scholarship checklist
+
+Create a fully interactive checklist of every applicable application requirement.
+
+Show completed, pending, missing and conditional items.
+
+---
+
+## MODULE B — RFP AND TENDER INTELLIGENCE
+
+This module must provide professional procurement and bid evaluation analysis.
+
+Do not simply summarize the tender.
+
+Extract all requirements that can affect eligibility, bid submission, commercial viability, compliance and contract risk.
+
+### B1. Tender identity and source
+
+Extract:
+
+- Tender/RFP title.
+- RFP or tender reference number.
+- Issuing organization.
+- Government department or purchasing authority.
+- Procurement officer/contact.
+- Country and jurisdiction.
+- Publication date.
+- Official procurement portal.
+- Procurement category.
+- Project name.
+- Contract type.
+- Procurement method.
+- Current amendment/version information.
+
+Clearly answer:
+
+**Who is issuing this tender, what are they purchasing, and who is eligible to participate?**
+
+### B2. High-priority Go/No-Go checks
+
+#### 1. Submission deadline
+
+Extract:
+
+- Closing date.
+- Exact closing time.
+- Time zone.
+- Submission portal.
+- Email or physical delivery method.
+- Final upload requirements.
+- Late submission policy.
+
+#### 2. Q&A and pre-bid conference
+
+Extract:
+
+- Clarification question deadline.
+- Pre-bid meeting date.
+- Meeting location or link.
+- Mandatory attendance status.
+- Question submission method.
+- Official response publication date.
+
+#### 3. Mandatory eligibility and compliance
+
+Extract:
+
+- Required company registration.
+- Minimum company age.
+- Licenses.
+- ISO certifications.
+- SOC 2 or HIPAA requirements where relevant.
+- Security clearances.
+- Local registration.
+- Industry qualifications.
+- Previous project experience.
+- Mandatory certifications.
+- Disqualification conditions.
+
+#### 4. Financial prerequisites
+
+Extract:
+
+- Minimum annual turnover.
+- Minimum net worth.
+- Financial statements required.
+- Bid security.
+- Earnest money deposit.
+- Bid bond.
+- Performance bond.
+- Advance payment guarantee.
+- Insurance requirements.
+- Liability insurance limits.
+- Bank guarantees.
+
+#### 5. Technical scope and capability fit
+
+Extract:
+
+- Required deliverables.
+- Technical specifications.
+- Functional requirements.
+- Mandatory features.
+- Technical standards.
+- Implementation obligations.
+- Integrations.
+- Customization requirements.
+- Hardware/software requirements.
+- Acceptance criteria.
+
+#### 6. Project timeline
+
+Extract:
+
+- Expected contract award date.
+- Expected start date.
+- Implementation duration.
+- Milestones.
+- Delivery deadlines.
+- Go-live date.
+- Deployment schedule.
+- Reporting requirements.
+
+### B3. Commercial and operational requirements
+
+#### 7. Budget and commercial model
+
+Extract:
+
+- Estimated project budget.
+- Maximum budget.
+- Currency.
+- Fixed-price or time-and-materials model.
+- Pricing format.
+- Tax requirements.
+- Cost breakdown.
+- Pricing submission template.
+- Price escalation rules.
+
+#### 8. Evaluation criteria
+
+Extract:
+
+- Technical scoring.
+- Commercial scoring.
+- Price weighting.
+- Past performance weighting.
+- Experience weighting.
+- Presentation/demo requirements.
+- Minimum qualifying score.
+- Tie-breaking rules.
+- Evaluation stages.
+
+Do not invent scoring weights.
+
+#### 9. Payment terms
+
+Extract:
+
+- Payment schedule.
+- Milestone-based payments.
+- Invoice terms.
+- Net 30/60/90 or other periods.
+- Advance payment.
+- Retention.
+- Penalties.
+- Payment approval process.
+
+#### 10. Personnel requirements
+
+Extract:
+
+- Key personnel.
+- Minimum experience.
+- Required certifications.
+- CV/resume requirements.
+- Staffing numbers.
+- Project manager requirements.
+- Technical team qualifications.
+- Replacement restrictions.
+
+#### 11. SLA and post-implementation commitments
+
+Extract:
+
+- Support period.
+- Maintenance obligations.
+- Response times.
+- Resolution times.
+- Availability requirements.
+- Uptime guarantees.
+- Penalties for SLA breaches.
+- Warranty.
+- Service credits.
+
+#### 12. Submission format
+
+Extract:
+
+- Required forms.
+- Required templates.
+- Page limits.
+- Font requirements.
+- File types.
+- File naming rules.
+- Signature requirements.
+- Separate technical and financial bids.
+- Envelope structure.
+- Required declarations.
+- Submission portal instructions.
+
+### B4. Legal and contractual risks
+
+Extract:
+
+- Indemnity.
+- Liability limitations.
+- Uncapped liability.
+- Liquidated damages.
+- Termination clauses.
+- Dispute resolution.
+- Governing law.
+- Intellectual property ownership.
+- Confidentiality.
+- Data protection.
+- Non-compete clauses.
+- Subcontracting restrictions.
+- Third-party dependencies.
+- Contract duration.
+- Renewal options.
+- Termination for convenience.
+
+### B5. Crucial fine print
+
+Check:
+
+- Contract award date versus work start date.
+- Portal registration requirements.
+- Vendor onboarding.
+- Portal activation time.
+- Amendments and addenda.
+- Revised submission deadlines.
+- Conflicting document dates.
+- Annexures.
+- Referenced external documents.
+- Mandatory forms hidden in appendices.
+- Clarifications issued after publication.
+
+If multiple versions of the tender exist, identify the latest supplied version and highlight conflicts.
+
+Do not assume that an uploaded document is the latest version.
+
+### B6. Bid/No-Bid decision engine
+
+Provide an explicit recommendation:
+
+- BID.
+- CONDITIONAL BID.
+- NO-BID.
+- INSUFFICIENT INFORMATION.
+
+Evaluate:
+
+1. Mandatory eligibility.
+2. Financial capacity.
+3. Technical capability.
+4. Relevant experience.
+5. Certifications.
+6. Required personnel.
+7. Timeline feasibility.
+8. Commercial viability.
+9. Contractual risks.
+10. Submission readiness.
+
+For every recommendation, explain:
+
+- Why this recommendation was made.
+- Mandatory disqualification risks.
+- Missing company information.
+- Capabilities that match.
+- Capabilities that do not match.
+- Financial risks.
+- Time/resource risks.
+- Conditions that must be resolved before bidding.
+
+**Important:** The tender document alone cannot prove that the user's company qualifies.
+
+Ask for or compare against company profile evidence where needed.
+
+Do not automatically declare NO-BID because the company profile is unavailable.
+
+In that situation, use INSUFFICIENT INFORMATION or CONDITIONAL BID.
+
+### B7. RFP submission checklist
+
+Generate a comprehensive, interactive checklist grouped into:
+
+1. Registration and portal setup.
+2. Eligibility documents.
+3. Company registration.
+4. Financial statements.
+5. Certifications.
+6. Technical proposal.
+7. Commercial proposal.
+8. Team CVs and qualifications.
+9. Past project references.
+10. Legal declarations.
+11. Bid security and guarantees.
+12. Mandatory forms.
+13. Pre-bid meeting and Q&A.
+14. Final submission verification.
+
+Each item must display:
+
+- Requirement.
+- Mandatory/optional/conditional.
+- Responsible person or team, if known.
+- Source page/section.
+- Evidence required.
+- Status.
+- Deadline.
+- Notes.
+
+### B8. RFP final decision report
+
+Show:
+
+- Bid recommendation.
+- Critical disqualification risks.
+- Mandatory compliance gaps.
+- Technical fit.
+- Commercial fit.
+- Key deadlines.
+- Estimated effort, only when sufficient information exists.
+- Submission checklist completion.
+- Remaining decisions.
+
+---
+
+## MODULE C — COLLEGE ADMISSION INTELLIGENCE
+
+Extract:
+
+### Admission identity
+
+- College/university name.
+- Department.
+- Program.
+- Degree.
+- Academic year.
+- Admission authority.
+- Admission notification number.
+- Official website.
+- Application portal.
+
+### Eligibility
+
+- Minimum marks.
+- Required subjects.
+- Entrance examination.
+- Rank or score cutoffs.
+- Reservation/category criteria.
+- Age restrictions.
+- Residency restrictions.
+- Required prior qualification.
+
+### Important dates
+
+- Application opening.
+- Application closing.
+- Counseling rounds.
+- Entrance examination.
+- Merit list.
+- Seat allotment.
+- Fee payment.
+- Document verification.
+- Reporting date.
+- Commencement of classes.
+
+### Document checklist
+
+- Previous marksheets.
+- Transfer certificate.
+- Migration certificate.
+- Study certificates.
+- Income certificate.
+- Category certificate.
+- Domicile certificate.
+- Identity proof.
+- Entrance examination scorecard.
+- Passport photographs.
+- Admission letter.
+- Fee receipt.
+- Other mandatory certificates.
+
+Identify original, photocopy, attested and notarized requirements.
+
+### Fees and refund policy
+
+- Tuition fees.
+- Admission fees.
+- Development fees.
+- Laboratory fees.
+- Library fees.
+- Hostel fees.
+- Mess fees.
+- Deposits.
+- Refund conditions.
+- Cancellation deadlines.
+- Refund deductions.
+- Non-refundable charges.
+
+### Admission process
+
+Present the entire process in chronological order.
+
+Include all mandatory actions and documents.
+
+---
+
+## MODULE D — COLLEGE RULES AND REGULATIONS
+
+Extract:
+
+- Attendance requirements.
+- Minimum attendance for examination eligibility.
+- Medical leave rules.
+- Detainment rules.
+- Academic progression.
+- Examination rules.
+- Internal assessment.
+- Passing marks.
+- CGPA calculation.
+- Backlog rules.
+- Supplementary examination.
+- Revaluation.
+- Anti-ragging requirements.
+- Code of conduct.
+- Disciplinary actions.
+- Hostel rules.
+- Hostel timings.
+- Visitor policies.
+- Mess charges.
+- Library rules.
+- Laboratory rules.
+- Fines and penalties.
+- Scholarship policies.
+- Placement eligibility.
+- Internship policies.
+- Student portal requirements.
+- Grievance redressal.
+- Important contact information.
+
+Highlight any rule that could lead to fines, examination disqualification, suspension or loss of benefits.
+
+Distinguish mandatory institutional rules from recommendations.
+
+---
+
+## MODULE E — JOB AND CAREER INTELLIGENCE
+
+Extract:
+
+### Role identity
+
+- Company name.
+- Job title.
+- Department.
+- Seniority level.
+- Reporting manager.
+- Employment type.
+- Work location.
+- Remote/hybrid/on-site status.
+
+### Eligibility and qualifications
+
+- Degree requirements.
+- Minimum experience.
+- Required certifications.
+- Mandatory skills.
+- Preferred skills.
+- Technical stack.
+- Tools and platforms.
+- Industry experience.
+
+### Responsibilities
+
+- Daily responsibilities.
+- Main deliverables.
+- Expected outcomes.
+- Cross-functional collaboration.
+- Leadership responsibilities.
+
+### Compensation and conditions
+
+- Salary range.
+- Currency.
+- Bonus.
+- Benefits.
+- Leave.
+- Working hours.
+- Notice period.
+- Probation.
+- Relocation requirements.
+
+### Hiring process
+
+- Application deadline.
+- Screening stages.
+- Interview rounds.
+- Technical assessment.
+- Coding test.
+- Portfolio requirements.
+- Required documents.
+
+### ATS and interview intelligence
+
+Extract:
+
+- Important keywords.
+- Repeated skills.
+- Mandatory technical terms.
+- Preferred technologies.
+- Likely interview topics based on stated responsibilities.
+- Practical task clues.
+- Relevant project experience requested.
+
+### Candidate matching
+
+When a resume or candidate profile is provided:
+
+- Compare mandatory skills.
+- Compare preferred skills.
+- Compare experience.
+- Compare education.
+- Identify missing qualifications.
+- Identify strong matching evidence.
+- Suggest honest improvements.
+
+Never fabricate qualifications or experience.
+
+---
+
+## MODULE F — GOVERNMENT SCHEME INTELLIGENCE
+
+Extract:
+
+- Scheme name.
+- Government department.
+- Issuing authority.
+- Beneficiary category.
+- Purpose.
+- Geographic eligibility.
+- Income criteria.
+- Required registration.
+- Financial benefits.
+- Subsidy amount.
+- Loan amount.
+- Interest rate.
+- Repayment conditions.
+- Required documents.
+- Application process.
+- Application portal.
+- Deadlines.
+- Verification process.
+- Renewal conditions.
+- Disqualification conditions.
+
+Clearly distinguish grants, loans, subsidies, reimbursements and other benefits.
+
+---
+
+## MODULE G — GOVERNMENT CONTRACT INTELLIGENCE
+
+Extract:
+
+- Contracting authority.
+- Contract reference.
+- Contract value.
+- Scope.
+- Deliverables.
+- Contract duration.
+- Commencement date.
+- Completion date.
+- Payment milestones.
+- Performance obligations.
+- Security requirements.
+- Compliance obligations.
+- Penalties.
+- Termination rights.
+- Dispute resolution.
+- Renewal conditions.
+
+Highlight high-risk clauses.
+
+---
+
+## MODULE H — LEGAL CONTRACT INTELLIGENCE
+
+Extract:
+
+- Parties.
+- Effective date.
+- Expiry date.
+- Contract purpose.
+- Scope.
+- Obligations of each party.
+- Payment terms.
+- Renewal.
+- Termination.
+- Notice period.
+- Liability.
+- Indemnification.
+- Confidentiality.
+- Data protection.
+- Intellectual property.
+- Non-compete.
+- Non-solicitation.
+- Dispute resolution.
+- Governing law.
+- Penalties.
+- Unusual or one-sided clauses.
+
+Show clause references and explain risks in understandable language.
+
+Include a disclaimer that the AI analysis is informational and not a substitute for qualified legal advice.
+
+---
+
+## MODULE I — FINANCIAL DOCUMENT INTELLIGENCE
+
+Support documents such as:
+
+- Bank statements.
+- Income statements.
+- Balance sheets.
+- Cash flow statements.
+- Budgets.
+- Invoices.
+- Receipts.
+- Loan agreements.
+- Tax documents.
+- Financial proposals.
+
+Extract:
+
+- Reporting period.
+- Entity.
+- Currency.
+- Total revenue.
+- Expenses.
+- Net profit/loss.
+- Assets.
+- Liabilities.
+- Cash flow.
+- Outstanding amounts.
+- Due dates.
+- Interest rates.
+- Fees.
+- Payment terms.
+- Financial ratios when sufficient data exists.
+- Unusual transactions or inconsistencies.
+
+Never invent calculations from missing data.
+
+Show the source table, row or page for important figures where available.
+
+Protect sensitive financial and personal information.
+
+---
+
+## MODULE J — GENERAL DOCUMENT INTELLIGENCE
+
+For other supported documents, dynamically identify their purpose and create relevant sections.
+
+Extract:
+
+- Executive summary.
+- Main subject.
+- Important entities.
+- Key facts.
+- Important dates.
+- Important numbers.
+- Obligations.
+- Requirements.
+- Recommendations.
+- Risks.
+- Decisions.
+- Action items.
+- References.
+- Tables.
+- Definitions.
+- Appendices.
+
+Do not force an unrelated specialized template onto an unknown document.
+
+The general analysis engine must still provide a useful deep analysis.
+
+---
+
+# 5. UNIVERSAL READINESS AND PROGRESS ENGINE
+
+Fix the existing confusing readiness values, especially 0%, 5% and 35%.
+
+Do not arbitrarily increase these percentages.
+
+Separate these concepts:
+
+### A. Extraction progress
+
+Tracks the actual extraction workflow.
+
+### B. Analysis completeness
+
+Tracks how many applicable information fields have been successfully extracted with evidence.
+
+### C. Eligibility match
+
+Tracks whether a supplied profile satisfies eligibility requirements.
+
+### D. Action checklist readiness
+
+Tracks completed and outstanding actions.
+
+### E. Bid readiness
+
+Tracks mandatory RFP compliance and submission preparation.
+
+### F. Document verification
+
+Tracks facts that need manual confirmation.
+
+Use a consistent status system:
+
+- Verified.
+- Extracted, not independently verified.
+- Missing.
+- Needs verification.
+- Conflicting information.
+- Not applicable.
+
+Every readiness percentage must have a clear definition and calculation.
+
+If information is missing, show exactly what is missing.
+
+Never treat a document's mere presence as proof that a requirement is satisfied.
+
+Never mark a checklist item completed unless the user confirms it or the application has valid supporting evidence.
+
+---
+
+# 6. COMPLETE MULTI-PAGE WEBSITE EXPERIENCE
+
+The application must not be one giant scrolling page.
+
+Build a clear multi-page experience using the existing router and architecture.
+
+Do not introduce a new routing framework unnecessarily.
+
+## PAGE 1 — LANDING / ENTRY EXPERIENCE
+
+Create a premium introduction to DOCULENS.
+
+Design direction:
+
+- Cinematic dark theme.
+- Deep obsidian and graphite surfaces.
+- Electric lime accent.
+- Warm white typography.
+- Premium editorial typography.
+- Subtle gradients.
+- Beautiful depth and lighting.
+- Smooth transitions.
+- Sophisticated interactions.
+
+Include:
+
+- Strong hero section.
+- DOCULENS branding.
+- Clear explanation of the product.
+- Document intelligence capability showcase.
+- Supported document categories.
+- Feature highlights.
+- How it works.
+- Call to action.
+- Footer.
+
+The landing page should feel premium and memorable, not like a generic AI template.
+
+## PAGE 2 — DASHBOARD
+
+Include:
+
+- Welcome section.
+- Upload document action.
+- Recent documents.
+- Total analyzed documents.
+- Processing documents.
+- Saved analyses.
+- Pending checklists.
+- Important upcoming deadlines.
+- Recent activity.
+- Quick access to document categories.
+
+Only display metrics that are actually supported by stored data.
+
+Do not use fabricated statistics.
+
+## PAGE 3 — DOCUMENT UPLOAD WORKSPACE
+
+Include:
+
+- Drag-and-drop upload.
+- File picker.
+- Supported format information.
+- Upload validation.
+- File details.
+- Extraction progress.
+- Processing stage.
+- Cancellation if genuinely supported.
+- Error states.
+- Retry.
+- Multiple-file handling if already supported.
+
+The upload screen should explain what DOCULENS is doing.
+
+## PAGE 4 — DOCUMENT ANALYSIS WORKSPACE
+
+This is the most important page.
+
+Create a document analysis interface with a sidebar or navigation area.
+
+Use dedicated tabs and sub-tabs.
+
+### Main tabs
+
+1. Overview.
+2. Key Details.
+3. Requirements.
+4. Eligibility & Matching.
+5. Financial Information.
+6. Important Dates.
+7. Document Checklist.
+8. Risks & Warnings.
+9. Action Plan.
+10. Source References.
+11. Full Extracted Content.
+
+The tabs should adapt to the detected document type.
+
+For example:
+
+Scholarship:
+- Overview.
+- Provider & Source.
+- Scholarship Amount.
+- Eligibility.
+- Deadlines.
+- Required Documents.
+- Application Steps.
+- Eligibility Match.
+- Checklist.
+- Risks.
+- Sources.
+
+RFP:
+- Overview.
+- Issuer & Scope.
+- Go/No-Go.
+- Mandatory Eligibility.
+- Technical Requirements.
+- Financial Requirements.
+- Evaluation Criteria.
+- Commercial Terms.
+- Important Dates.
+- Legal Risks.
+- Submission Checklist.
+- Bid Recommendation.
+- Source References.
+
+College admission:
+- Overview.
+- College & Program.
+- Eligibility.
+- Admission Schedule.
+- Fees.
+- Required Documents.
+- Application Process.
+- Admission Checklist.
+- Rules and Conditions.
+
+Job:
+- Overview.
+- Company & Role.
+- Responsibilities.
+- Skills.
+- Eligibility.
+- Compensation.
+- Hiring Process.
+- ATS Keywords.
+- Candidate Match.
+- Preparation Checklist.
+
+Do not display irrelevant tabs.
+
+Do not show empty tabs as if information was found.
+
+If a relevant field is missing, display that it was not specified.
+
+## PAGE 5 — DOCUMENT LIBRARY
+
+Include:
+
+- All documents.
+- Search.
+- Filters.
+- Categories.
+- Upload date.
+- Analysis status.
+- Document type.
+- Saved documents.
+- Sort options.
+- Document detail access.
+
+## PAGE 6 — CHECKLISTS & ACTION CENTER
+
+Show all generated checklists.
+
+Group by document.
+
+Allow users to:
+
+- Check off items.
+- Reopen items.
+- Add notes.
+- See deadlines.
+- Filter pending tasks.
+- Filter completed tasks.
+- See blocked requirements.
+
+Use existing persistence systems.
+
+## PAGE 7 — PROFILE & EVIDENCE VAULT
+
+Preserve existing profile functionality.
+
+Allow users to manage evidence such as:
+
+- Academic qualifications.
+- Certifications.
+- Company registration.
+- Financial statements.
+- Licenses.
+- Previous projects.
+- Experience.
+- Identity and supporting documents where appropriate.
+
+Use evidence matching to compare uploaded evidence with document requirements.
+
+Never assume that uploading a file proves the requirement is satisfied.
+
+## PAGE 8 — SETTINGS
+
+Preserve existing settings.
+
+Organize available settings clearly.
+
+Do not remove existing configuration or integrations.
+
+---
+
+# 7. PREMIUM UI AND ANIMATION SYSTEM
+
+Make the website visually impressive while preserving usability and performance.
+
+## 7.1 Landing animations
+
+Implement where supported:
+
+- Smooth entrance animation.
+- Scroll-triggered reveals.
+- Sliding content sections.
+- Subtle floating elements.
+- Animated background details.
+- Smooth page transitions.
+- Cursor-reactive effects where appropriate.
+- Interactive hover effects.
+- Smooth navigation transitions.
+
+Animations must be subtle and professional.
+
+Do not make the application feel like a game.
+
+## 7.2 Dashboard animations
+
+Use:
+
+- Smooth card entrances.
+- Subtle hover elevation.
+- Animated progress transitions.
+- Smooth chart appearances.
+- Clean modal transitions.
+- Responsive skeleton loading.
+
+## 7.3 Document analysis animations
+
+Use:
+
+- Tab transition animations.
+- Expand/collapse transitions.
+- Smooth checklist interactions.
+- Progress indicators.
+- Subtle highlight animations for important information.
+- Smooth navigation between analysis sections.
+
+Do not delay access to important document information with excessive animations.
+
+## 7.4 Cursor interactions
+
+Add tasteful cursor interactions where appropriate:
+
+- Subtle hover response.
+- Interactive cards.
+- Smooth pointer transitions.
+- Small contextual visual feedback.
+
+Do not replace the native cursor with an inaccessible custom cursor.
+
+Ensure touch devices still work correctly.
+
+## 7.5 Performance and accessibility
+
+- Respect reduced-motion preferences.
+- Avoid unnecessary continuous animations.
+- Avoid heavy animation libraries if not already installed.
+- Prevent layout shifts.
+- Keep scrolling smooth.
+- Preserve keyboard accessibility.
+- Keep text readable.
+
+---
+
+# 8. FIX ALL EXISTING UI BUGS
+
+Perform a full UI inspection.
+
+Specifically investigate:
+
+### A. Content clipping
+
+Fix:
+
+- Headings being cut off.
+- Text overflowing cards.
+- Content hidden behind containers.
+- Modal content being cut off.
+- Buttons extending outside their containers.
+- Incorrect fixed heights.
+- Missing responsive wrapping.
+- Cards clipping important information.
+- Table overflow.
+
+Do not simply hide overflowing content with overflow:hidden.
+
+Use appropriate sizing, wrapping, scrolling and responsive layout.
+
+### B. Horizontal slider and carousel bugs
+
+The horizontal slider is currently not moving correctly.
+
+Fix the underlying interaction.
+
+Wherever horizontal scrolling is used, implement working left/right navigation arrows when appropriate.
+
+Requirements:
+
+- Left arrow moves to previous content.
+- Right arrow moves to next content.
+- Buttons perform actual scrolling.
+- Buttons respect scroll boundaries.
+- Disabled states are correct.
+- Touch scrolling works.
+- Trackpad scrolling works.
+- Mouse interactions work.
+- Keyboard navigation works where appropriate.
+- Arrows do not cover important content.
+- Responsive behavior works.
+
+If a carousel has multiple pages, show a sensible position indicator.
+
+Do not add decorative arrows that do nothing.
+
+### C. Responsive design
+
+Check:
+
+- Large desktop.
+- Laptop.
+- Tablet.
+- Mobile.
+
+Fix:
+
+- Horizontal overflow.
+- Overlapping cards.
+- Broken grids.
+- Cut-off navigation.
+- Text wrapping.
+- Modal sizing.
+- Sidebar behavior.
+- Tab overflow.
+- Button positioning.
+
+### D. Navigation and interaction bugs
+
+Verify every visible:
+
+- Button.
+- Tab.
+- Sub-tab.
+- Dropdown.
+- Navigation item.
+- Search control.
+- Filter.
+- Carousel arrow.
+- Modal.
+- Checklist control.
+
+Every visible interactive element must work.
+
+Remove misleading interactive styling from non-interactive elements.
+
+---
+
+# 9. ANALYSIS RESULT PRESENTATION
+
+Information must be comprehensive but easy to understand.
+
+Use a visual hierarchy.
+
+## Important information
+
+Show critical details prominently:
+
+- Deadline.
+- Issuing organization.
+- Financial amount.
+- Eligibility.
+- Mandatory documents.
+- Disqualification risks.
+- Important actions.
+
+## Evidence and verification
+
+Every extracted important fact should have, where available:
+
+- Page number.
+- Section name.
+- Table reference.
+- Short supporting excerpt.
+- Verification status.
+
+Provide a way to open the relevant source page or extracted section when the existing document viewer supports it.
+
+## Missing information
+
+Use explicit labels:
+
+- Not found in document.
+- Not clearly stated.
+- Needs manual verification.
+- Conflicting information.
+- Not applicable.
+
+Do not fill missing fields with guesses.
+
+## Risk indicators
+
+Use consistent priority levels:
+
+- Critical.
+- High.
+- Medium.
+- Low.
+- Informational.
+
+Do not make every detail look like an emergency.
+
+## Actionable summaries
+
+Every document should conclude with:
+
+1. What this document is.
+2. Who issued it.
+3. What it requires.
+4. What benefits or obligations it creates.
+5. Important dates.
+6. Important financial details.
+7. Risks.
+8. What the user needs to do next.
+
+---
+
+# 10. TECHNICAL REQUIREMENTS
+
+Before implementation, inspect the actual project.
+
+The known architecture includes:
+
+- React.
+- Vite.
+- Express.
+- Node.js.
+- TypeScript.
+- Python FastAPI.
+- Docling.
+- pdfjs-dist.
+- Existing spreadsheet and document parsers.
+- OpenRouter AI integration.
+
+Verify that these are still the current technologies.
+
+Do not assume the repository has remained unchanged.
+
+## Backend and extraction
+
+- Use the actual implemented service endpoints.
+- Align Node and Python configuration.
+- Use realistic timeouts.
+- Validate extraction results.
+- Avoid false success responses.
+- Preserve page metadata.
+- Avoid duplicated content.
+- Handle large files safely.
+- Avoid arbitrary content truncation.
+
+## AI analysis
+
+- Preserve OpenRouter integration.
+- Preserve dynamic model routing.
+- Avoid hardcoding outdated model IDs.
+- Use structured analysis output.
+- Handle long documents with chunking.
+- Consolidate all chunk results.
+- Validate AI output before displaying it.
+- Handle failed model responses gracefully.
+- Do not expose API keys in frontend code.
+
+## Privacy
+
+- Preserve privacy scanning.
+- Redact sensitive information before external AI transmission.
+- Do not log document contents.
+- Do not claim OCR/image redaction exists unless it is implemented.
+- Protect personal and financial information.
+
+## Data persistence
+
+Use the existing database or storage solution.
+
+Do not introduce an additional database just for convenience.
+
+Persist:
+- Saved documents.
+- Analysis results.
+- User checklists.
+- Checklist completion.
+- Relevant user preferences.
+- Evidence matching, where supported.
+
+If a current job store is only an in-memory Map, identify its persistence limitations honestly.
+
+Do not claim permanent storage if the implementation does not provide it.
+
+---
+
+# 11. TESTING REQUIREMENTS
+
+Test the complete system.
+
+## Extraction tests
+
+1. One-page text PDF.
+2. Multi-page PDF.
+3. 32-page RFP.
+4. Scholarship PDF.
+5. Scanned PDF.
+6. Mixed scanned/text PDF.
+7. Invalid PDF.
+8. DOCX.
+9. Multi-sheet XLSX.
+10. CSV.
+11. Large supported document.
+12. Unsupported file type.
+
+## Analysis tests
+
+1. Scholarship with an explicit amount.
+2. Scholarship with an unclear amount.
+3. Scholarship with multiple eligibility criteria.
+4. RFP with mandatory pre-bid meeting.
+5. RFP with bid security.
+6. RFP with evaluation weightings.
+7. RFP with amendments.
+8. College admission brochure.
+9. College rules handbook.
+10. Job description.
+11. Employment agreement.
+12. Financial report.
+13. Government scheme.
+14. Unknown/general document.
+
+## UI tests
+
+- Landing page.
+- Dashboard.
+- Upload page.
+- Analysis page.
+- Tabs and sub-tabs.
+- Document library.
+- Checklists.
+- Settings.
+- Horizontal sliders.
+- Left/right arrows.
+- Responsive layouts.
+- Animation behavior.
+- Text clipping.
+- Modal overflow.
+- Navigation.
+
+## Regression tests
+
+Verify that every existing feature still works.
+
+Do not claim a test passed unless it was actually run.
+
+If sample documents are unavailable, mark the relevant test as not run.
+
+---
+
+# 12. IMPLEMENTATION STRATEGY
+
+Work in these phases.
+
+### PHASE 1 — INSPECT
+
+- Inspect repository.
+- Check Git status.
+- Inventory existing features.
+- Map architecture.
+- Identify bugs.
+- Assign agent responsibilities.
+
+### PHASE 2 — REPAIR EXTRACTION
+
+- Fix PDF extraction.
+- Fix Docling communication.
+- Fix port mismatch.
+- Fix incompatible endpoints.
+- Fix timeouts.
+- Fix OCR.
+- Fix page-level mapping.
+- Fix incomplete extraction.
+- Fix false success.
+
+### PHASE 3 — IMPROVE ANALYSIS
+
+- Implement document classification.
+- Improve universal analysis.
+- Implement specialized document templates.
+- Implement structured output.
+- Add source references.
+- Add missing information detection.
+
+### PHASE 4 — READINESS AND CHECKLISTS
+
+- Separate progress from readiness.
+- Add document-specific readiness calculations.
+- Add interactive checklists.
+- Add bid/no-bid evaluation.
+- Add eligibility and evidence matching.
+
+### PHASE 5 — FRONTEND DEVELOPMENT
+
+- Implement multipage navigation.
+- Improve landing page.
+- Improve dashboard.
+- Improve upload experience.
+- Build document analysis workspace.
+- Add dynamic tabs and sub-tabs.
+- Add checklist center.
+- Improve document library.
+
+### PHASE 6 — UI BUG FIXES AND ANIMATIONS
+
+- Fix clipping.
+- Fix horizontal scrolling.
+- Fix arrow controls.
+- Fix responsive layouts.
+- Add animations.
+- Test interactions.
+
+### PHASE 7 — FINAL QA
+
+- Run builds and checks using existing dependencies.
+- Test backend.
+- Test Python service.
+- Test upload and extraction.
+- Test document analysis.
+- Test navigation.
+- Test existing features.
+- Resolve regressions.
+
+---
+
+# 13. FINAL ACCEPTANCE CRITERIA
+
+DOCULENS must satisfy the following before being declared complete:
+
+1. It automatically identifies supported document types.
+2. It extracts all available content from the uploaded document.
+3. It does not silently stop at 35%.
+4. It does not fabricate extracted details.
+5. It identifies the source organization when stated.
+6. It extracts amounts, dates and eligibility conditions where applicable.
+7. It creates document-specific checklists.
+8. It provides complete RFP bid/no-bid analysis.
+9. It identifies mandatory tender submission requirements.
+10. It provides college admission and rules analysis.
+11. It provides job and career analysis.
+12. It handles general, government, contract and financial documents.
+13. It provides evidence references for important details where available.
+14. It separates missing information from confirmed information.
+15. It calculates meaningful readiness indicators.
+16. It has a functional multi-page interface.
+17. It has appropriate document-specific tabs and sub-tabs.
+18. It has polished and responsive animations.
+19. It fixes content clipping.
+20. It fixes horizontal sliders and working navigation arrows.
+21. Existing functionality remains intact.
+22. No unauthorized installation has occurred.
+
+---
+
+# 14. FINAL REPORT
+
+At the end, the lead agent must provide:
+
+### 1. Architecture report
+Explain the existing application architecture.
+
+### 2. Problems identified
+List all important bugs and root causes.
+
+### 3. Extraction improvements
+Explain exactly what was fixed.
+
+### 4. Analysis improvements
+List implemented document categories and extraction fields.
+
+### 5. Readiness improvements
+Explain each readiness calculation.
+
+### 6. Frontend improvements
+List new pages, tabs, sub-tabs and animations.
+
+### 7. UI bug fixes
+List clipping, slider, navigation and responsive fixes.
+
+### 8. Files modified
+List every modified file and the reason.
+
+### 9. Testing report
+Separate passed, failed and not-run tests.
+
+### 10. Feature preservation
+Identify which existing features were verified.
+
+### 11. Installation confirmation
+Explicitly confirm whether any software or dependencies were installed. No installation is authorized without my approval.
+
+### 12. Remaining limitations
+List anything that needs further work or my approval.
+
+Use one final status:
+
+- COMPLETE — all acceptance criteria verified.
+- PARTIALLY COMPLETE — some requirements remain.
+- BLOCKED — external dependency or permission is required.
+
+---
+
+# FINAL DIRECTIVE
+
+Build DOCULENS into a genuinely useful universal document intelligence platform.
+
+The core experience must be:
+
+UPLOAD → EXTRACT EVERYTHING AVAILABLE → UNDERSTAND DOCUMENT → DEEP ANALYSIS → IDENTIFY REQUIREMENTS → GENERATE CHECKLIST → EVALUATE READINESS → RECOMMEND NEXT ACTIONS.
+
+The output must be detailed, accurate, structured, source-grounded and visually impressive.
+
+Do not sacrifice accuracy for animations.
+
+Do not sacrifice working features for redesign.
+
+Do not sacrifice complete extraction for faster-looking progress.
+
+Do not invent facts when documents are unclear.
+
+Do not install anything on my computer.
+
+**Start by inspecting the existing repository and reporting the architecture, feature inventory, extraction problems and proposed implementation plan. Then coordinate all 10 agents and implement the improvements in controlled phases.**
