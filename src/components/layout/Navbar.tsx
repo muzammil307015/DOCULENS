@@ -8,7 +8,6 @@
  * 4. Compare (multi-document comparison)
  * 5. Profile (evidence vault, credentials, and fact management)
  * 6. Settings (AI provider, BYOK vault with connection test button, and privacy controls)
- * Plus persistent Firebase Authentication state and functional Sign Out.
  */
 
 import React, { useState, useEffect } from "react";
@@ -23,15 +22,11 @@ import {
   Lock,
   Unlock,
   Clock,
-  LogOut,
-  User as UserIcon,
-  Cloud,
+  Shield,
 } from "lucide-react";
 import { APP_CONFIG } from "../../config/appConfig";
 import { isVaultUnlocked, subscribeToVaultLock } from "../../services/byokVault";
 import { storage } from "../../services/storageAdapter";
-import { auth } from "../../config/firebase";
-import { onAuthStateChanged, signOut, User } from "firebase/auth";
 
 interface NavbarProps {
   currentView: string;
@@ -49,33 +44,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   isAiConnected = false,
 }) => {
   const [vaultUnlocked, setVaultUnlocked] = useState(isVaultUnlocked());
-  const [currentUser, setCurrentUser] = useState<User | null>(auth.currentUser);
   const hoursRemaining = storage.getExpiryRemainingHours();
 
   useEffect(() => {
-    const unsubAuth = onAuthStateChanged(auth, user => {
-      setCurrentUser(user);
-    });
-
-    const unsubVault = subscribeToVaultLock(() => {
+    return subscribeToVaultLock(() => {
       setVaultUnlocked(false);
     });
-
-    return () => {
-      unsubAuth();
-      unsubVault();
-    };
   }, []);
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      storage.clearLocalGuestState();
-      onNavigate("landing");
-    } catch (err) {
-      console.error("Sign out error:", err);
-    }
-  };
 
   const navLinks = [
     { id: "landing", label: "Home", icon: Sparkles },
@@ -94,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-6">
           <button
             onClick={() => onNavigate("landing")}
-            className="flex items-center gap-2.5 text-left focus:outline-none group cursor-pointer"
+            className="flex items-center gap-2.5 text-left focus:outline-none group"
           >
             <div
               className="flex h-9 w-9 items-center justify-center rounded-lg border transition-all shadow-sm"
@@ -134,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.id}
                   onClick={() => onNavigate(link.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                     link.highlight
                       ? "bg-[#E5C158]/15 text-[#E5C158] border border-[#E5C158]/45 hover:bg-[#E5C158]/25 shadow-sm"
                       : isActive
@@ -152,29 +127,19 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Status Actions */}
         <div className="flex items-center gap-2.5">
-          {/* Cloud Sync or Guest Mode Badge */}
-          {currentUser ? (
-            <div
-              title={`Authenticated as ${currentUser.email}. Documents saved to private Firestore account.`}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/40 border border-emerald-600/30 text-[11px] text-emerald-300 font-mono"
-            >
-              <Cloud className="h-3 w-3 text-emerald-400" />
-              <span>Cloud Synced</span>
-            </div>
-          ) : (
-            <div
-              title={`Guest mode: session data stored locally. Auto-expires in ${hoursRemaining} hours.`}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0E1017] border border-[rgba(226,232,240,0.14)] text-[11px] text-[#CBD5E1] font-mono"
-            >
-              <Clock className="h-3 w-3 text-[#E5C158]" />
-              <span>Guest ({hoursRemaining}h left)</span>
-            </div>
-          )}
+          {/* Guest Mode Badge */}
+          <div
+            title={`Guest mode: session data stored locally. Auto-expires in ${hoursRemaining} hours.`}
+            className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0E1017] border border-[rgba(226,232,240,0.14)] text-[11px] text-[#CBD5E1] font-mono"
+          >
+            <Clock className="h-3 w-3 text-[#E5C158]" />
+            <span>Guest ({hoursRemaining}h left)</span>
+          </div>
 
           {/* AI Status Button */}
           <button
             onClick={() => onNavigate("settings")}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0E1017] hover:bg-[#161A25] border border-[rgba(226,232,240,0.14)] text-[11px] text-[#CBD5E1] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0E1017] hover:bg-[#161A25] border border-[rgba(226,232,240,0.14)] text-[11px] text-[#CBD5E1] transition-colors"
             title="Configure OpenRouter / Gemini AI models or test connection"
           >
             <Sparkles className="h-3 w-3 text-[#E5C158]" />
@@ -189,7 +154,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* BYOK Encrypted Vault Lock Trigger */}
           <button
             onClick={onOpenVaultModal}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] transition-colors cursor-pointer ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] transition-colors ${
               vaultUnlocked
                 ? "bg-emerald-950/40 border-emerald-600/40 text-emerald-400 hover:bg-emerald-900/40"
                 : "bg-[#0E1017] border-[rgba(226,232,240,0.14)] text-[#CBD5E1] hover:bg-[#161A25]"
@@ -200,55 +165,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="hidden sm:inline font-mono">Vault</span>
           </button>
 
-          {/* Authentication State & Actions */}
-          {currentUser ? (
-            <div className="flex items-center gap-2 pl-1">
-              <button
-                onClick={onOpenAuthModal}
-                className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#141822] hover:bg-[#1C2230] border border-[#2B3142] text-xs text-white transition-all cursor-pointer"
-                title={`Account: ${currentUser.email}`}
-              >
-                {currentUser.photoURL ? (
-                  <img
-                    src={currentUser.photoURL}
-                    alt={currentUser.displayName || "User"}
-                    className="h-5 w-5 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="h-5 w-5 rounded-full bg-[#E5C158]/20 text-[#E5C158] flex items-center justify-center font-bold text-[10px]">
-                    {(currentUser.displayName || currentUser.email || "U")[0].toUpperCase()}
-                  </div>
-                )}
-                <span className="max-w-[100px] truncate hidden sm:inline text-[11px] font-semibold">
-                  {currentUser.displayName || currentUser.email?.split("@")[0]}
-                </span>
-              </button>
-
-              {/* Functional Sign Out Button */}
-              <button
-                onClick={handleSignOut}
-                className="p-1.5 rounded-lg bg-[#141822] hover:bg-red-950/60 border border-[#2B3142] hover:border-red-800/60 text-slate-400 hover:text-red-300 transition-colors cursor-pointer"
-                title="Sign out of account"
-              >
-                <LogOut className="h-4 w-4" />
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 ml-1">
-              <button
-                onClick={onOpenAuthModal}
-                className="px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
-              >
-                Sign In
-              </button>
-              <button
-                onClick={onOpenAuthModal}
-                className="btn-gold-imperial px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
-              >
-                Sign Up
-              </button>
-            </div>
-          )}
+          {/* Sign In / Account */}
+          <button
+            onClick={onOpenAuthModal}
+            className="btn-gold-imperial ml-1 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all"
+          >
+            Sign in
+          </button>
         </div>
       </div>
     </header>
