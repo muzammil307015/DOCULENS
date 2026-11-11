@@ -1,102 +1,77 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper functions
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-    
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-
-    function isValidString(val, maxLen) {
-      return val is string && val.size() <= maxLen;
-    }
-
-    // Users collection
-    match /users/{userId} {
-      allow read, write: if isOwner(userId);
-    }
-
-    // Profiles collection
-    match /profiles/{userId} {
-      allow read, write: if isOwner(userId);
-    }
-
-    // Evidence documents
-    match /evidenceDocuments/{docId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // Analysis documents
-    match /analysisDocuments/{docId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // Analyses results
-    match /analyses/{analysisId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // Extracted facts
-    match /extractedFacts/{factId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // Requirements
-    match /requirements/{reqId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // Checklists & Checklist items
-    match /checklists/{checklistId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    match /checklistItems/{itemId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // Deadlines
-    match /deadlines/{deadlineId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // Memory entries
-    match /memoryEntries/{entryId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // Encrypted credentials (BYOK vault)
-    match /encryptedCredentials/{credId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // AI Preferences
-    match /aiPreferences/{userId} {
-      allow read, write: if isOwner(userId);
-    }
-
-    // Activity log
-    match /activityLog/{logId} {
-      allow read, write: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
-    }
-
-    // Deny all other access by default
+    // Global catch-all default deny
     match /{document=**} {
       allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // User profile document
+    match /users/{userId} {
+      allow read, write: if isOwner(userId) && isValidId(userId);
+
+      // Hierarchical subcollections: strictly scoped to the parent user
+      match /analyses/{analysisId} {
+        allow read, write: if isOwner(userId) && isValidId(analysisId);
+      }
+
+      match /documents/{documentId} {
+        allow read, write: if isOwner(userId) && isValidId(documentId);
+      }
+
+      match /evidence/{evidenceId} {
+        allow read, write: if isOwner(userId) && isValidId(evidenceId);
+      }
+
+      match /memory/{memoryId} {
+        allow read, write: if isOwner(userId) && isValidId(memoryId);
+      }
+
+      match /chat_sessions/{sessionId} {
+        allow read, write: if isOwner(userId) && isValidId(sessionId);
+        
+        match /messages/{messageId} {
+          allow read, write: if isOwner(userId) && isValidId(messageId);
+        }
+      }
+
+      match /checklists/{checklistId} {
+        allow read, write: if isOwner(userId) && isValidId(checklistId);
+      }
+    }
+
+    // Top-level collections with explicit resource.data.userId verification
+    match /analyses/{analysisId} {
+      allow read, update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    match /evidenceDocuments/{docId} {
+      allow read, update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    match /memoryEntries/{entryId} {
+      allow read, update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    match /chatSessions/{sessionId} {
+      allow read, update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
     }
   }
 }

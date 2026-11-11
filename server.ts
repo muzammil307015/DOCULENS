@@ -48,8 +48,22 @@ function getGeminiClient(customApiKey?: string): GoogleGenAI | null {
   }
 }
 
+/**
+ * Helper to resolve an OpenRouter API key using either a user-provided BYOK key
+ * or the protected server OPENROUTER_API_KEY environment variable.
+ */
+function getOpenRouterApiKey(customApiKey?: string): string | null {
+  const key = (customApiKey && (customApiKey.startsWith("sk-") || customApiKey.startsWith("sk-or-"))
+    ? customApiKey
+    : process.env.OPENROUTER_API_KEY)?.trim();
+  return key || null;
+}
+
 if (process.env.GEMINI_API_KEY) {
   console.log("Server-side Gemini AI client initialized.");
+}
+if (process.env.OPENROUTER_API_KEY) {
+  console.log("Server-side OpenRouter AI key configured.");
 }
 
 /**
@@ -160,6 +174,7 @@ app.get("/api/health", (_req, res) => {
     status: "ok",
     app: "DOCULENS",
     hasServerGemini: Boolean(getGeminiClient()),
+    hasServerOpenRouter: Boolean(getOpenRouterApiKey()),
     environment: process.env.NODE_ENV || "development",
   });
 });
@@ -286,6 +301,25 @@ app.post("/api/ai/test-connection", async (req, res) => {
       }
     }
 
+    const serverOpenRouterKey = getOpenRouterApiKey();
+    if (serverOpenRouterKey) {
+      const testResp = await fetch("https://openrouter.ai/api/v1/auth/key", {
+        headers: { Authorization: `Bearer ${serverOpenRouterKey}` },
+      });
+      const latency = Date.now() - startTime;
+      if (testResp.ok) {
+        const keyData = (await testResp.json().catch(() => ({}))) as any;
+        return res.json({
+          status: "connected",
+          provider: "OpenRouter (Server Env)",
+          model: "openrouter/free",
+          latencyMs: latency,
+          keyLabel: keyData?.data?.label || "Server Configured Key",
+          message: "Protected Server OpenRouter connection active.",
+        });
+      }
+    }
+
     const serverClient = getGeminiClient();
     if (serverClient) {
       await serverClient.models.generateContent({
@@ -378,6 +412,7 @@ Respond strictly in valid JSON matching this exact structure:
 
     const byokGemini = userApiKey && userApiKey.startsWith("AIza") ? getGeminiClient(userApiKey) : null;
     const serverGemini = getGeminiClient();
+    const openRouterKey = getOpenRouterApiKey(userApiKey);
 
     if (byokGemini) {
       modelUsed = "gemini-3.8-flash";
@@ -390,9 +425,9 @@ Respond strictly in valid JSON matching this exact structure:
         },
       });
       rawJson = response.text || "";
-    } else if (userApiKey && (userApiKey.startsWith("sk-") || userApiKey.startsWith("sk-or-"))) {
+    } else if (openRouterKey && (model.startsWith("openrouter/") || !serverGemini || model.includes("/"))) {
       const orResult = await callOpenRouterCompletion({
-        apiKey: userApiKey,
+        apiKey: openRouterKey,
         model,
         messages: [
           { role: "system", content: systemPrompt },
@@ -414,6 +449,19 @@ Respond strictly in valid JSON matching this exact structure:
         },
       });
       rawJson = response.text || "";
+    } else if (openRouterKey) {
+      const orResult = await callOpenRouterCompletion({
+        apiKey: openRouterKey,
+        model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        jsonMode: true,
+        origin: req.get("origin"),
+      });
+      rawJson = orResult.content;
+      modelUsed = orResult.modelUsed;
     } else {
       return res.status(401).json({
         error:
@@ -471,13 +519,14 @@ app.post("/api/ai/chat", async (req, res) => {
 
     const byokGemini = userApiKey && userApiKey.startsWith("AIza") ? getGeminiClient(userApiKey) : null;
     const serverGemini = getGeminiClient();
+    const openRouterKey = getOpenRouterApiKey(userApiKey);
 
-    if (userApiKey && (userApiKey.startsWith("sk-") || userApiKey.startsWith("sk-or-"))) {
+    if (openRouterKey && (model.startsWith("openrouter/") || !serverGemini || model.includes("/") || !byokGemini)) {
       const combinedMessages = systemPrompt
         ? [{ role: "system", content: systemPrompt }, ...messages]
         : messages;
       const orResult = await callOpenRouterCompletion({
-        apiKey: userApiKey,
+        apiKey: openRouterKey,
         model,
         messages: combinedMessages,
         jsonMode: false,
@@ -542,6 +591,7 @@ Provide response strictly in valid JSON:
     let answerJson = "";
     const byokGemini = userApiKey && userApiKey.startsWith("AIza") ? getGeminiClient(userApiKey) : null;
     const serverGemini = getGeminiClient();
+    const openRouterKey = getOpenRouterApiKey(userApiKey);
 
     if (byokGemini) {
       const response = await byokGemini.models.generateContent({
@@ -553,9 +603,9 @@ Provide response strictly in valid JSON:
         },
       });
       answerJson = response.text || "";
-    } else if (userApiKey && (userApiKey.startsWith("sk-") || userApiKey.startsWith("sk-or-"))) {
+    } else if (openRouterKey && (model.startsWith("openrouter/") || !serverGemini || model.includes("/"))) {
       const orResult = await callOpenRouterCompletion({
-        apiKey: userApiKey,
+        apiKey: openRouterKey,
         model,
         messages: [
           { role: "system", content: systemPrompt },
@@ -575,6 +625,18 @@ Provide response strictly in valid JSON:
         },
       });
       answerJson = response.text || "";
+    } else if (openRouterKey) {
+      const orResult = await callOpenRouterCompletion({
+        apiKey: openRouterKey,
+        model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        jsonMode: true,
+        origin: req.get("origin"),
+      });
+      answerJson = orResult.content;
     } else {
       return res.status(401).json({ error: "AI provider requires a connected key or server configuration." });
     }
@@ -632,6 +694,7 @@ Propose a chart strictly in valid JSON:
     let rawResp = "";
     const byokGemini = userApiKey && userApiKey.startsWith("AIza") ? getGeminiClient(userApiKey) : null;
     const serverGemini = getGeminiClient();
+    const openRouterKey = getOpenRouterApiKey(userApiKey);
 
     if (byokGemini) {
       const resp = await byokGemini.models.generateContent({
@@ -643,9 +706,9 @@ Propose a chart strictly in valid JSON:
         },
       });
       rawResp = resp.text || "";
-    } else if (userApiKey && (userApiKey.startsWith("sk-") || userApiKey.startsWith("sk-or-"))) {
+    } else if (openRouterKey && (model.startsWith("openrouter/") || !serverGemini || model.includes("/"))) {
       const orResult = await callOpenRouterCompletion({
-        apiKey: userApiKey,
+        apiKey: openRouterKey,
         model,
         messages: [
           { role: "system", content: systemPrompt },
@@ -665,6 +728,18 @@ Propose a chart strictly in valid JSON:
         },
       });
       rawResp = response.text || "";
+    } else if (openRouterKey) {
+      const orResult = await callOpenRouterCompletion({
+        apiKey: openRouterKey,
+        model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        jsonMode: true,
+        origin: req.get("origin"),
+      });
+      rawResp = orResult.content;
     } else {
       return res.status(401).json({ error: "AI key required for AI-generated charts." });
     }

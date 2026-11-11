@@ -37,14 +37,38 @@ import { parseDocumentFile } from "./services/parsers/unifiedParser";
 import { runDeterministicAnalysis } from "./services/deterministicEngine";
 import { compareRequirementsAgainstVault } from "./services/comparisonEngine";
 import { buildRedactedTextCopy } from "./services/privacyService";
+import { AuthView } from "./components/auth/AuthView";
+import { auth } from "./config/firebase";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { DEMO_DOCUMENTS, DemoDocumentSpec, SAMPLE_PROFILES } from "./services/demoData";
 import { isVaultUnlocked } from "./services/byokVault";
-import { X } from "lucide-react";
+import { X, ShieldAlert } from "lucide-react";
 
 const ENTRY_SEEN_SESSION_KEY = "doculens_entry_seen_v2";
 
 const VALID_DIRECT_VIEWS = new Set([
   "landing",
+  "overview",
+  "dashboard",
+  "new_analysis",
+  "my_documents",
+  "compare",
+  "profile",
+  "vault",
+  "settings",
+  "settings_ai",
+  "privacy_center",
+  "deadlines",
+  "checklists",
+  "memory",
+  "analyze",
+  "signin",
+  "signup",
+  "login",
+  "register",
+]);
+
+const PROTECTED_VIEWS = new Set([
   "overview",
   "dashboard",
   "new_analysis",
@@ -82,7 +106,15 @@ function shouldShowInitialEntryGate(initialView: string): boolean {
 }
 
 export default function App() {
-  const [currentView, setCurrentViewState] = useState<string>(() => resolveInitialView());
+  const [currentUser, setCurrentUser] = useState<User | null>(auth.currentUser);
+  const [isGuestMode, setIsGuestMode] = useState<boolean>(false);
+  const [currentView, setCurrentViewState] = useState<string>(() => {
+    const initial = resolveInitialView();
+    if (PROTECTED_VIEWS.has(initial) && !auth.currentUser) {
+      return "landing";
+    }
+    return initial;
+  });
   const [isEntryGateOpen, setIsEntryGateOpen] = useState<boolean>(() =>
     shouldShowInitialEntryGate(resolveInitialView())
   );
@@ -114,13 +146,17 @@ export default function App() {
 
   const isAiConnected = hasServerGemini || isVaultUnlocked();
 
-  // Navigate helper that synchronizes browser history so Back/Forward work cleanly
+  // Navigate helper that protects dashboard/workspace routes from unauthenticated visitors
   const setCurrentView = (nextView: string) => {
-    setCurrentViewState(nextView);
+    let target = nextView;
+    if (PROTECTED_VIEWS.has(target) && !auth.currentUser && !isGuestMode) {
+      target = "signin";
+    }
+    setCurrentViewState(target);
     if (typeof window !== "undefined") {
-      const targetHash = nextView === "landing" ? "#landing" : `#${nextView}`;
+      const targetHash = target === "landing" ? "#landing" : `#${target}`;
       if (window.location.hash !== targetHash) {
-        window.history.pushState({ view: nextView }, "", targetHash);
+        window.history.pushState({ view: target }, "", targetHash);
       }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -128,7 +164,10 @@ export default function App() {
 
   useEffect(() => {
     const handlePopState = () => {
-      const viewFromHash = resolveInitialView();
+      let viewFromHash = resolveInitialView();
+      if (PROTECTED_VIEWS.has(viewFromHash) && !auth.currentUser && !isGuestMode) {
+        viewFromHash = "signin";
+      }
       setCurrentViewState(viewFromHash);
       if (viewFromHash !== "landing") {
         setIsEntryGateOpen(false);
@@ -136,7 +175,7 @@ export default function App() {
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
+  }, [isGuestMode]);
 
   const handleCompleteEntryGate = (listenSelected: boolean) => {
     setAudioEnabled(listenSelected);
@@ -173,9 +212,9 @@ export default function App() {
     return "hash_" + Math.abs(hash).toString(16);
   };
 
-  // Load persisted records on startup (never auto-load demo or old analysis as active)
-  useEffect(() => {
-    async function loadData() {
+  // Reload user data strictly from current user's isolated Firestore collections
+  const reloadUserData = React.useCallback(async () => {
+    try {
       const analyses = await storage.getAnalyses();
       const parsedDocs = await storage.getParsedDocuments();
       const profile = await storage.getProfile();
@@ -187,18 +226,55 @@ export default function App() {
       if (profile) setUserProfile(profile);
       setEvidenceDocs(evidence);
       setMemoryItems(memory);
+    } catch (err) {
+      console.warn("User data loading notice:", err);
+    }
+  }, []);
 
+  // Listen to Firebase Auth state transitions
+  useEffect(() => {
+    const unsubAuth = onAuthStateChanged(auth, async user => {
+      setCurrentUser(user);
+      if (user) {
+        setIsGuestMode(false);
+        await reloadUserData();
+        setCurrentViewState(prev => {
+          if (prev === "signin" || prev === "signup" || prev === "login" || prev === "register") {
+            if (typeof window !== "undefined") {
+              window.history.pushState({ view: "dashboard" }, "", "#dashboard");
+            }
+            return "dashboard";
+          }
+          return prev;
+        });
+      } else if (!isGuestMode) {
+        setActiveAnalysis(null);
+        setActiveParsedDoc(null);
+        setRecentAnalyses([]);
+        setSavedParsedDocs([]);
+        setEvidenceDocs([]);
+        setUserProfile(null);
+        setMemoryItems([]);
+      }
+    });
+
+    return () => unsubAuth();
+  }, [isGuestMode, reloadUserData]);
+
+  // Check backend server AI readiness
+  useEffect(() => {
+    async function checkHealth() {
       try {
         const healthRes = await fetch("/api/health");
         if (healthRes.ok) {
           const healthData = await healthRes.json();
-          setHasServerGemini(Boolean(healthData.hasServerGemini));
+          setHasServerGemini(Boolean(healthData.hasServerGemini || healthData.hasServerOpenRouter));
         }
       } catch {
         // Ignore offline health check failure
       }
     }
-    loadData();
+    checkHealth();
   }, []);
 
   // Helper to open an existing analysis and restore its full ParsedDocumentData
@@ -385,6 +461,8 @@ export default function App() {
     });
   };
 
+  const canAccessWorkspace = Boolean(currentUser || isGuestMode);
+
   return (
     <div
       className={`min-h-screen flex flex-col font-['Plus_Jakarta_Sans',sans-serif] ${
@@ -447,125 +525,72 @@ export default function App() {
           />
         )}
 
-        {/* 1. Overview (Dashboard cockpit with welcome banner, prominent upload dropzone, recent documents, upcoming deadlines, quick actions) */}
-        {(currentView === "overview" || currentView === "dashboard") && (
-          <DashboardHome
-            onStartAnalysis={() => setCurrentView("new_analysis")}
-            onOpenAnalysis={handleOpenSavedAnalysis}
-            onSelectDemoDoc={handleSelectDemo}
-            onNavigate={setCurrentView}
-            recentAnalyses={recentAnalyses}
-            profile={userProfile}
-            vaultDocCount={evidenceDocs.length}
-            isAiConnected={isAiConnected}
-          />
-        )}
-
-        {/* 2. New Analysis (Clean upload workflow with category shortcuts) */}
-        {currentView === "new_analysis" && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-            <div className="p-6 rounded-2xl bg-[#0E1017] border border-[#252A38] text-center space-y-2">
-              <h2 className="font-['Space_Grotesk'] text-2xl font-bold text-white">
-                Ingest & Analyse New Document
-              </h2>
-              <p className="text-xs text-slate-400 max-w-lg mx-auto">
-                Upload any PDF, Word (DOCX/DOC), Spreadsheet (XLSX/CSV/ODS), Presentation (PPTX), OpenDocument (ODT), RTF, or Scanned Image. Deterministic privacy sanitization and source citation tracking enabled.
-              </p>
-            </div>
-
-            <UploadZone
-              onFileSelected={handleUserFileUpload}
-              onDemoSelected={handleSelectDemo}
-              isProcessing={isProcessing}
-              processingProgress={processingProgress}
-              processingStage={processingStage}
-              externalError={uploadError}
-              onClearExternalError={() => setUploadError(null)}
-              onRetry={lastAttemptedFile ? handleRetryLastUpload : undefined}
+        {/* Dedicated Sign In / Sign Up View */}
+        {(currentView === "signin" || currentView === "signup" || currentView === "login" || currentView === "register") && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <AuthView
+              initialMode={currentView === "signup" || currentView === "register" ? "signup" : "signin"}
+              onSuccess={() => setCurrentView("dashboard")}
+              onContinueAsGuest={() => {
+                setIsGuestMode(true);
+                setCurrentView("dashboard");
+              }}
             />
           </div>
         )}
 
-        {/* 3. My Documents (Dedicated document and reports repository) */}
-        {currentView === "my_documents" && (
-          <MyDocumentsView
-            documents={recentAnalyses}
-            onOpenDocument={handleOpenSavedAnalysis}
-            onDeleteDocument={id => {
-              setRecentAnalyses(prev => prev.filter(a => a.id !== id));
-              storage.deleteAnalysis(id);
-              if (activeAnalysis?.id === id) {
-                setActiveAnalysis(null);
-              }
-            }}
-            onNavigateToUpload={() => setCurrentView("new_analysis")}
-          />
+        {/* Protected View Gate for unauthenticated visitors without guest session */}
+        {PROTECTED_VIEWS.has(currentView) && !currentUser && !isGuestMode && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+            <div className="max-w-md mx-auto p-4 rounded-xl bg-amber-950/40 border border-amber-600/40 text-amber-200 text-xs flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <ShieldAlert className="h-4 w-4 text-amber-400 shrink-0" />
+                <span>Sign in or register to access this private workspace and saved work.</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsGuestMode(true);
+                }}
+                className="text-[11px] font-mono text-[#E5C158] hover:underline shrink-0 cursor-pointer"
+              >
+                Guest Mode →
+              </button>
+            </div>
+            <AuthView
+              initialMode="signin"
+              onSuccess={() => setCurrentView("dashboard")}
+              onContinueAsGuest={() => {
+                setIsGuestMode(true);
+              }}
+            />
+          </div>
         )}
+        {canAccessWorkspace && (
+          <>
+            {/* 1. Overview (Dashboard cockpit with welcome banner, prominent upload dropzone, recent documents, upcoming deadlines, quick actions) */}
+            {(currentView === "overview" || currentView === "dashboard") && (
+              <DashboardHome
+                onStartAnalysis={() => setCurrentView("new_analysis")}
+                onOpenAnalysis={handleOpenSavedAnalysis}
+                onSelectDemoDoc={handleSelectDemo}
+                onNavigate={setCurrentView}
+                recentAnalyses={recentAnalyses}
+                profile={userProfile}
+                vaultDocCount={evidenceDocs.length}
+                isAiConnected={isAiConnected}
+              />
+            )}
 
-        {/* 4. Compare (Multi-document comparison) */}
-        {currentView === "compare" && (
-          <MultiDocComparison
-            availableAnalyses={recentAnalyses}
-            onOpenAnalysis={handleOpenSavedAnalysis}
-          />
-        )}
-
-        {/* 5. Profile (Evidence vault, credentials, and fact management) */}
-        {(currentView === "profile" || currentView === "vault") && (
-          <EvidenceVaultView
-            profile={userProfile}
-            onSaveProfile={prof => {
-              setUserProfile(prof);
-              storage.saveProfile(prof);
-            }}
-            evidenceDocs={evidenceDocs}
-            onAddEvidenceDoc={doc => {
-              setEvidenceDocs(prev => [doc, ...prev]);
-              storage.saveEvidenceDocument(doc);
-            }}
-            onDeleteEvidenceDoc={id => {
-              setEvidenceDocs(prev => prev.filter(d => d.id !== id));
-              storage.deleteEvidenceDocument(id);
-            }}
-          />
-        )}
-
-        {/* 6. Settings (AI provider, BYOK vault with connection test button, and privacy controls) */}
-        {(currentView === "settings" || currentView === "settings_ai") && (
-          <AiSettingsView />
-        )}
-
-        {currentView === "privacy_center" && <PrivacyCenterView />}
-
-        {currentView === "memory" && (
-          <DocumentMemoryView
-            memoryItems={memoryItems}
-            onToggleReuse={(id: string) => {
-              setMemoryItems(prev =>
-                prev.map(m => (m.id === id ? { ...m, userApprovedForReuse: !m.userApprovedForReuse } : m))
-              );
-            }}
-            onDeleteItem={(id: string) => {
-              setMemoryItems(prev => prev.filter(m => m.id !== id));
-              storage.deleteMemoryItem(id);
-            }}
-            onClearAll={() => {
-              setMemoryItems([]);
-            }}
-          />
-        )}
-
-        {/* Active Analysis Studio View */}
-        {currentView === "analyze" && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-            {!activeAnalysis || isProcessing ? (
-              <div className="space-y-6">
+            {/* 2. New Analysis (Clean upload workflow with category shortcuts) */}
+            {currentView === "new_analysis" && (
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
                 <div className="p-6 rounded-2xl bg-[#0E1017] border border-[#252A38] text-center space-y-2">
                   <h2 className="font-['Space_Grotesk'] text-2xl font-bold text-white">
-                    Analyse a Document
+                    Ingest & Analyse New Document
                   </h2>
                   <p className="text-xs text-slate-400 max-w-lg mx-auto">
-                    Upload an RFP, scholarship circular, contract, job description, or spreadsheet.
+                    Upload any PDF, Word (DOCX/DOC), Spreadsheet (XLSX/CSV/ODS), Presentation (PPTX), OpenDocument (ODT), RTF, or Scanned Image. Deterministic privacy sanitization and source citation tracking enabled.
                   </p>
                 </div>
 
@@ -580,79 +605,177 @@ export default function App() {
                   onRetry={lastAttemptedFile ? handleRetryLastUpload : undefined}
                 />
               </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-[#0E1017] border border-[#252A38] text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="text-slate-400">Current Document:</span>
-                    <strong className="text-white font-mono">{activeAnalysis.title}</strong>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setActiveAnalysis(null);
-                      setCurrentView("new_analysis");
-                    }}
-                    className="px-3 py-1 rounded bg-[#1A1E2B] hover:bg-[#202B3D] text-slate-300 font-mono text-xs border border-slate-700"
-                  >
-                    + Upload New Document
-                  </button>
-                </div>
+            )}
 
-                <AnalysisStudio
-                  analysis={activeAnalysis}
-                  parsedDoc={
-                    activeParsedDoc || {
-                      id: activeAnalysis.docId,
-                      fileName: activeAnalysis.title,
-                      fileSizeBytes: 1024 * 100,
-                      fileType: "application/pdf",
-                      detectedFormat: "pdf",
-                      uploadedAt: activeAnalysis.analyzedAt,
-                      pages: [{ pageNumber: 1, text: activeAnalysis.executiveSummary }],
-                      fullText: activeAnalysis.executiveSummary,
-                      redactedText: activeAnalysis.executiveSummary,
-                      sensitiveDetections: [],
-                      detectedCategory: activeAnalysis.category,
-                      extractedTitle: activeAnalysis.title,
-                      wordCount: activeAnalysis.executiveSummary.split(/\s+/).length,
-                      tableCount: 0,
-                      sheetCount: 0,
-                      extractionQualityScore: 98,
-                      parserEngineUsed: "native-engine",
-                      extractionWarnings: [],
-                    }
+            {/* 3. My Documents (Dedicated document and reports repository) */}
+            {currentView === "my_documents" && (
+              <MyDocumentsView
+                documents={recentAnalyses}
+                onOpenDocument={handleOpenSavedAnalysis}
+                onDeleteDocument={id => {
+                  setRecentAnalyses(prev => prev.filter(a => a.id !== id));
+                  storage.deleteAnalysis(id);
+                  if (activeAnalysis?.id === id) {
+                    setActiveAnalysis(null);
                   }
-                  profile={userProfile}
-                  onUpdateAnalysis={updated => {
-                    setActiveAnalysis(updated);
-                    storage.saveAnalysis(updated);
-                    setRecentAnalyses(prev => [updated, ...prev.filter(a => a.id !== updated.id)]);
-                  }}
-                  onNavigateToVault={() => setCurrentView("profile")}
-                />
+                }}
+                onNavigateToUpload={() => setCurrentView("new_analysis")}
+              />
+            )}
+
+            {/* 4. Compare (Multi-document comparison) */}
+            {currentView === "compare" && (
+              <MultiDocComparison
+                availableAnalyses={recentAnalyses}
+                onOpenAnalysis={handleOpenSavedAnalysis}
+              />
+            )}
+
+            {/* 5. Profile (Evidence vault, credentials, and fact management) */}
+            {(currentView === "profile" || currentView === "vault") && (
+              <EvidenceVaultView
+                profile={userProfile}
+                onSaveProfile={prof => {
+                  setUserProfile(prof);
+                  storage.saveProfile(prof);
+                }}
+                evidenceDocs={evidenceDocs}
+                onAddEvidenceDoc={doc => {
+                  setEvidenceDocs(prev => [doc, ...prev]);
+                  storage.saveEvidenceDocument(doc);
+                }}
+                onDeleteEvidenceDoc={id => {
+                  setEvidenceDocs(prev => prev.filter(d => d.id !== id));
+                  storage.deleteEvidenceDocument(id);
+                }}
+              />
+            )}
+
+            {/* 6. Settings (AI provider, BYOK vault with connection test button, and privacy controls) */}
+            {(currentView === "settings" || currentView === "settings_ai") && (
+              <AiSettingsView />
+            )}
+
+            {currentView === "privacy_center" && <PrivacyCenterView />}
+
+            {currentView === "memory" && (
+              <DocumentMemoryView
+                memoryItems={memoryItems}
+                onToggleReuse={(id: string) => {
+                  setMemoryItems(prev =>
+                    prev.map(m => (m.id === id ? { ...m, userApprovedForReuse: !m.userApprovedForReuse } : m))
+                  );
+                }}
+                onDeleteItem={(id: string) => {
+                  setMemoryItems(prev => prev.filter(m => m.id !== id));
+                  storage.deleteMemoryItem(id);
+                }}
+                onClearAll={() => {
+                  setMemoryItems([]);
+                }}
+              />
+            )}
+
+            {/* Active Analysis Studio View */}
+            {currentView === "analyze" && (
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+                {!activeAnalysis || isProcessing ? (
+                  <div className="space-y-6">
+                    <div className="p-6 rounded-2xl bg-[#0E1017] border border-[#252A38] text-center space-y-2">
+                      <h2 className="font-['Space_Grotesk'] text-2xl font-bold text-white">
+                        Analyse a Document
+                      </h2>
+                      <p className="text-xs text-slate-400 max-w-lg mx-auto">
+                        Upload an RFP, scholarship circular, contract, job description, or spreadsheet.
+                      </p>
+                    </div>
+
+                    <UploadZone
+                      onFileSelected={handleUserFileUpload}
+                      onDemoSelected={handleSelectDemo}
+                      isProcessing={isProcessing}
+                      processingProgress={processingProgress}
+                      processingStage={processingStage}
+                      externalError={uploadError}
+                      onClearExternalError={() => setUploadError(null)}
+                      onRetry={lastAttemptedFile ? handleRetryLastUpload : undefined}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-[#0E1017] border border-[#252A38] text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-400">Current Document:</span>
+                        <strong className="text-white font-mono">{activeAnalysis.title}</strong>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setActiveAnalysis(null);
+                          setCurrentView("new_analysis");
+                        }}
+                        className="px-3 py-1 rounded bg-[#1A1E2B] hover:bg-[#202B3D] text-slate-300 font-mono text-xs border border-slate-700"
+                      >
+                        + Upload New Document
+                      </button>
+                    </div>
+
+                    <AnalysisStudio
+                      analysis={activeAnalysis}
+                      parsedDoc={
+                        activeParsedDoc || {
+                          id: activeAnalysis.docId,
+                          fileName: activeAnalysis.title,
+                          fileSizeBytes: 1024 * 100,
+                          fileType: "application/pdf",
+                          detectedFormat: "pdf",
+                          uploadedAt: activeAnalysis.analyzedAt,
+                          pages: [{ pageNumber: 1, text: activeAnalysis.executiveSummary }],
+                          fullText: activeAnalysis.executiveSummary,
+                          redactedText: activeAnalysis.executiveSummary,
+                          sensitiveDetections: [],
+                          detectedCategory: activeAnalysis.category,
+                          extractedTitle: activeAnalysis.title,
+                          wordCount: activeAnalysis.executiveSummary.split(/\s+/).length,
+                          tableCount: 0,
+                          sheetCount: 0,
+                          extractionQualityScore: 98,
+                          parserEngineUsed: "native-engine",
+                          extractionWarnings: [],
+                        }
+                      }
+                      profile={userProfile}
+                      onUpdateAnalysis={updated => {
+                        setActiveAnalysis(updated);
+                        storage.saveAnalysis(updated);
+                        setRecentAnalyses(prev => [updated, ...prev.filter(a => a.id !== updated.id)]);
+                      }}
+                      onNavigateToVault={() => setCurrentView("profile")}
+                    />
+                  </div>
+                )}
               </div>
             )}
-          </div>
-        )}
 
-        {/* Supplementary views if navigated directly */}
-        {currentView === "deadlines" && (
-          <DeadlinesView
-            analyses={recentAnalyses}
-            onOpenAnalysis={handleOpenSavedAnalysis}
-          />
-        )}
+            {/* Supplementary views if navigated directly */}
+            {currentView === "deadlines" && (
+              <DeadlinesView
+                analyses={recentAnalyses}
+                onOpenAnalysis={handleOpenSavedAnalysis}
+              />
+            )}
 
-        {currentView === "checklists" && (
-          <ChecklistsView
-            analyses={recentAnalyses}
-            profile={userProfile}
-            onUpdateAnalysis={updated => {
-              setActiveAnalysis(updated);
-              storage.saveAnalysis(updated);
-              setRecentAnalyses(prev => [updated, ...prev.filter(a => a.id !== updated.id)]);
-            }}
-          />
+            {currentView === "checklists" && (
+              <ChecklistsView
+                analyses={recentAnalyses}
+                profile={userProfile}
+                onUpdateAnalysis={updated => {
+                  setActiveAnalysis(updated);
+                  storage.saveAnalysis(updated);
+                  setRecentAnalyses(prev => [updated, ...prev.filter(a => a.id !== updated.id)]);
+                }}
+              />
+            )}
+          </>
         )}
       </main>
 
@@ -683,9 +806,7 @@ export default function App() {
       <AccountModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        onSimulateLogin={() => {
-          setIsAuthModalOpen(false);
-        }}
+        onAuthStateChange={reloadUserData}
       />
 
       {/* Quick Vault Password Modal */}
